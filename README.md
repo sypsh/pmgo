@@ -1,6 +1,6 @@
 <div align="center">
      <a>
-        <img height="400px" width="400px" src="https://cloud.githubusercontent.com/assets/5413599/12247882/2fcb1ca6-b89d-11e5-933e-efade26acf13.jpg">
+        <img height="400px" width="400px" src="http://7xjbiz.com1.z0.glb.clouddn.com/github/socJAdzByYtu5maI">
      </a>
      <br/>
      <b>A</b>(guia) <b>P</b>(rocess) <b>M</b>(anager)
