@@ -25,8 +25,8 @@ package main
 
 // import "github.com/kardianos/osext"
 import "gopkg.in/alecthomas/kingpin.v2"
-import "github.com/topfreegames/apm/lib/cli"
-import "github.com/topfreegames/apm/lib/master"
+import "github.com/struCoder/pmgo/lib/cli"
+import "github.com/struCoder/pmgo/lib/master"
 
 import "github.com/sevlyar/go-daemon"
 
@@ -39,7 +39,7 @@ import "os/signal"
 import "github.com/Sirupsen/logrus"
 
 var (
-	app     = kingpin.New("apm", "Aguia Process Manager.")
+	app     = kingpin.New("pmgo", "Aguia Process Manager.")
 	dns     = app.Flag("dns", "TCP Dns host.").Default(":9876").String()
 	timeout = app.Flag("timeout", "Timeout to connect to client").Default("30s").Duration()
 
@@ -105,6 +105,7 @@ func main() {
 		cli := cli.InitCli(*dns, *timeout)
 		cli.Save()
 	case status.FullCommand():
+		// checkRemoteMasterServer()
 		cli := cli.InitCli(*dns, *timeout)
 		cli.Status()
 	}
@@ -124,16 +125,13 @@ func isDaemonRunning(ctx *daemon.Context) (bool, *os.Process, error) {
 	return true, d, nil
 }
 
-func startRemoteMasterServer() {
+func getCtx() *daemon.Context {
 	if *serveConfigFile == "" {
 		folderPath := os.Getenv("HOME")
 		*serveConfigFile = folderPath + "/.pmgo/config.toml"
 		os.MkdirAll(path.Dir(*serveConfigFile), 0755)
 	}
-	// workDir, err := osext.ExecutableFolder()
-	// if err != nil {
-	// 	log.Fatal
-	// }
+
 	ctx := &daemon.Context{
 		PidFileName: path.Join(filepath.Dir(*serveConfigFile), "main.pid"),
 		PidFilePerm: 0644,
@@ -142,12 +140,25 @@ func startRemoteMasterServer() {
 		WorkDir:     "./",
 		Umask:       027,
 	}
+	return ctx
+}
+
+// if RemoteMasterServer not running, just run
+func checkRemoteMasterServer() {
+	ctx := getCtx()
+	if ok, _, _ := isDaemonRunning(ctx); !ok {
+		startRemoteMasterServer()
+	}	
+}
+
+func startRemoteMasterServer() {
+	ctx := getCtx()
 	if ok, _, _ := isDaemonRunning(ctx); ok {
 		log.Info("pmgo daemon is already running.")
 		return
 	}
 
-	log.Info("Starting daemon...")
+	log.Info("daemon started")
 	d, err := ctx.Reborn()
 	if err != nil {
 		log.Fatalf("Failed to reborn daemon due to %+v.", err)
@@ -156,7 +167,6 @@ func startRemoteMasterServer() {
 	if d != nil {
 		return
 	}
-	log.Info("daemo started")
 	defer ctx.Release()
 	
 	log.Info("Starting remote master server...")
@@ -179,20 +189,7 @@ func startRemoteMasterServer() {
 
 func stopRemoteMasterServer() {
 	log.Info("pmgo stopping...")
-	if *serveStopConfigFile == "" {
-		folderPath := os.Getenv("HOME")
-		*serveStopConfigFile = folderPath + "/.pmgo/config.toml"
-		os.MkdirAll(path.Dir(*serveStopConfigFile), 0755)
-	}
-	ctx := &daemon.Context{
-		PidFileName: path.Join(filepath.Dir(*serveStopConfigFile), "main.pid"),
-		PidFilePerm: 0644,
-		LogFileName: path.Join(filepath.Dir(*serveStopConfigFile), "main.log"),
-		LogFilePerm: 0640,
-		WorkDir:     "./",
-		Umask:       027,
-	}
-
+	ctx := getCtx()
 	if ok, p, _ := isDaemonRunning(ctx); ok {
 		if err := p.Signal(syscall.Signal(syscall.SIGQUIT)); err != nil {
 			log.Fatalf("Failed to kill daemon %v", err)
@@ -201,5 +198,5 @@ func stopRemoteMasterServer() {
 		ctx.Release()
 		log.Info("instance is not running.")
 	}
-	log.Info("pmgo stopped")
+	log.Info("pmgo daemon terminated")
 }

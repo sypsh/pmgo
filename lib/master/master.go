@@ -26,10 +26,10 @@ import "sync"
 
 import "time"
 
-import "github.com/topfreegames/apm/lib/preparable"
-import "github.com/topfreegames/apm/lib/process"
-import "github.com/topfreegames/apm/lib/utils"
-import "github.com/topfreegames/apm/lib/watcher"
+import "github.com/struCoder/pmgo/lib/preparable"
+import "github.com/struCoder/pmgo/lib/process"
+import "github.com/struCoder/pmgo/lib/utils"
+import "github.com/struCoder/pmgo/lib/watcher"
 
 import log "github.com/Sirupsen/logrus"
 

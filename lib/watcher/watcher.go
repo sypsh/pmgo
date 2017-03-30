@@ -3,7 +3,7 @@ package watcher
 import "os"
 import "sync"
 
-import "github.com/topfreegames/apm/lib/process"
+import "github.com/struCoder/pmgo/lib/process"
 import log "github.com/Sirupsen/logrus"
 
 // ProcStatus is a wrapper with the process state and an error in case there's any.
