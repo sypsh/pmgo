@@ -23,7 +23,7 @@ It will start the remote client and return the instance so you can use to initia
 */
 package main
 
-import "github.com/kardianos/osext"
+// import "github.com/kardianos/osext"
 import "gopkg.in/alecthomas/kingpin.v2"
 import "github.com/topfreegames/apm/lib/cli"
 import "github.com/topfreegames/apm/lib/master"
@@ -36,17 +36,17 @@ import "syscall"
 import "os"
 import "os/signal"
 
-import log "github.com/Sirupsen/logrus"
+import "github.com/Sirupsen/logrus"
 
 var (
 	app     = kingpin.New("apm", "Aguia Process Manager.")
 	dns     = app.Flag("dns", "TCP Dns host.").Default(":9876").String()
 	timeout = app.Flag("timeout", "Timeout to connect to client").Default("30s").Duration()
 
-	serveStop           = app.Command("serve-stop", "Stop APM server instance.")
+	serveStop           = app.Command("kill", "Kill daemon pmgo.")
 	serveStopConfigFile = serveStop.Flag("config-file", "Config file location").String()
 
-	serve           = app.Command("serve", "Create APM server instance.")
+	serve           = app.Command("serve", "Create pmgo daemon.")
 	serveConfigFile = serve.Flag("config-file", "Config file location").String()
 
 	resurrect     = app.Command("resurrect", "Resurrect all previously save processes.")
@@ -71,10 +71,13 @@ var (
 
 	save = app.Command("save", "Save a list of processes onto a file.")
 
-	status = app.Command("status", "Get APM status.")
+	status = app.Command("list", "Get APM list.")
+
+	log = logrus.New()
 )
 
 func main() {
+	log.Out = os.Stdout
 	switch kingpin.MustParse(app.Parse(os.Args[1:])) {
 	case serveStop.FullCommand():
 		stopRemoteMasterServer()
@@ -123,13 +126,14 @@ func isDaemonRunning(ctx *daemon.Context) (bool, *os.Process, error) {
 
 func startRemoteMasterServer() {
 	if *serveConfigFile == "" {
-		folderPath, err := osext.ExecutableFolder()
-		if err != nil {
-			log.Fatal(err)
-		}
-		*serveConfigFile = folderPath + "/.apmenv/config.toml"
-		os.MkdirAll(path.Dir(*serveConfigFile), 0777)
+		folderPath := os.Getenv("HOME")
+		*serveConfigFile = folderPath + "/.pmgo/config.toml"
+		os.MkdirAll(path.Dir(*serveConfigFile), 0755)
 	}
+	// workDir, err := osext.ExecutableFolder()
+	// if err != nil {
+	// 	log.Fatal
+	// }
 	ctx := &daemon.Context{
 		PidFileName: path.Join(filepath.Dir(*serveConfigFile), "main.pid"),
 		PidFilePerm: 0644,
@@ -139,7 +143,7 @@ func startRemoteMasterServer() {
 		Umask:       027,
 	}
 	if ok, _, _ := isDaemonRunning(ctx); ok {
-		log.Info("Server is already running.")
+		log.Info("pmgo daemon is already running.")
 		return
 	}
 
@@ -152,9 +156,9 @@ func startRemoteMasterServer() {
 	if d != nil {
 		return
 	}
-
+	log.Info("daemo started")
 	defer ctx.Release()
-
+	
 	log.Info("Starting remote master server...")
 	remoteMaster := master.StartRemoteMasterServer(*dns, *serveConfigFile)
 
@@ -174,13 +178,11 @@ func startRemoteMasterServer() {
 }
 
 func stopRemoteMasterServer() {
+	log.Info("pmgo stopping...")
 	if *serveStopConfigFile == "" {
-		folderPath, err := osext.ExecutableFolder()
-		if err != nil {
-			log.Fatal(err)
-		}
-		*serveStopConfigFile = folderPath + "/.apmenv/config.toml"
-		os.MkdirAll(path.Dir(*serveStopConfigFile), 0777)
+		folderPath := os.Getenv("HOME")
+		*serveStopConfigFile = folderPath + "/.pmgo/config.toml"
+		os.MkdirAll(path.Dir(*serveStopConfigFile), 0755)
 	}
 	ctx := &daemon.Context{
 		PidFileName: path.Join(filepath.Dir(*serveStopConfigFile), "main.pid"),
@@ -199,4 +201,5 @@ func stopRemoteMasterServer() {
 		ctx.Release()
 		log.Info("instance is not running.")
 	}
+	log.Info("pmgo stopped")
 }
