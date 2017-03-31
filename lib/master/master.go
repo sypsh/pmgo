@@ -247,6 +247,7 @@ func (master *Master) start(proc process.ProcContainer) error {
 		}
 		master.Watcher.AddProcWatcher(proc)
 		proc.SetStatus("running")
+		proc.SetUptime()
 	}
 	return nil
 }
@@ -267,6 +268,7 @@ func (master *Master) stop(proc process.ProcContainer) error {
 			<-waitStop
 			proc.NotifyStopped()
 			proc.SetStatus("stopped")
+			proc.SetUptime()
 		}
 		log.Infof("Proc %s successfully stopped.", proc.Identifier())
 	}

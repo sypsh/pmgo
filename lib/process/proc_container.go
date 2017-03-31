@@ -19,6 +19,7 @@ type ProcContainer interface {
 	AddRestart()
 	NotifyStopped()
 	SetStatus(status string)
+	SetUptime()
 	GetPid() int
 	GetStatus() *ProcStatus
 	Watch() (*os.ProcessState, error)
@@ -74,7 +75,7 @@ func (proc *Proc) Start() error {
 	if err != nil {
 		return err
 	}
-
+	proc.Status.InitUptime()
 	proc.Status.SetStatus("started")
 	return nil
 }
@@ -178,6 +179,11 @@ func (proc *Proc) GetStatus() *ProcStatus {
 // Set proc status
 func (proc *Proc) SetStatus(status string) {
 	proc.Status.SetStatus(status);
+}
+
+// Set Uptime
+func (proc *Proc) SetUptime() {
+	proc.Status.SetUptime()
 }
 
 // Proc identifier that will be used by watcher to keep track of its processes

@@ -51,17 +51,17 @@ var (
 
 	resurrect     = app.Command("resurrect", "Resurrect all previously save processes.")
 
-	bin           = app.Command("bin", "Create bin process.")
-	binSourcePath = bin.Flag("source", "Go project source path. (Ex: github.com/topfreegames/apm)").Required().String()
-	binName       = bin.Arg("name", "Process name.").Required().String()
-	binKeepAlive  = bin.Flag("keep-alive", "Keep process alive forever.").Required().Bool()
-	binArgs       = bin.Flag("args", "External args.").Strings()
+	start           = app.Command("start", "start and daemonize an app.")
+	startSourcePath = start.Arg("start go file", "go file.").Required().String()
+	startName       = start.Arg("name", "Process name.").Required().String()
+	startKeepAlive  = start.Flag("keep-alive", "Keep process alive forever.").Required().Bool()
+	startArgs       = start.Flag("args", "External args.").Strings()
 
 	restart     = app.Command("restart", "Restart a process.")
 	restartName = restart.Arg("name", "Process name.").Required().String()
 
-	start     = app.Command("start", "Start a process.")
-	startName = start.Arg("name", "Process name.").Required().String()
+	// start     = app.Command("start", "Start a process.")
+	// startName = start.Arg("name", "Process name.").Required().String()
 
 	stop     = app.Command("stop", "Stop a process.")
 	stopName = stop.Arg("name", "Process name.").Required().String()
@@ -71,7 +71,7 @@ var (
 
 	save = app.Command("save", "Save a list of processes onto a file.")
 
-	status = app.Command("list", "Get APM list.")
+	status = app.Command("list", "Get pmgo list.")
 
 	log = logrus.New()
 )
@@ -86,15 +86,15 @@ func main() {
 	case resurrect.FullCommand():
 		cli := cli.InitCli(*dns, *timeout)
 		cli.Resurrect()
-	case bin.FullCommand():
+	case start.FullCommand():
 		cli := cli.InitCli(*dns, *timeout)
-		cli.StartGoBin(*binSourcePath, *binName, *binKeepAlive, *binArgs)
+		cli.StartGoBin(*startSourcePath, *startName, *startKeepAlive, *startArgs)
 	case restart.FullCommand():
 		cli := cli.InitCli(*dns, *timeout)
 		cli.RestartProcess(*restartName)
-	case start.FullCommand():
-		cli := cli.InitCli(*dns, *timeout)
-		cli.StartProcess(*startName)
+	// case start.FullCommand():
+	// 	cli := cli.InitCli(*dns, *timeout)
+	// 	cli.StartProcess(*startName)
 	case stop.FullCommand():
 		cli := cli.InitCli(*dns, *timeout)
 		cli.StopProcess(*stopName)
