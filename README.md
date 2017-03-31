@@ -1,9 +1,9 @@
 <div align="center">
      <a>
-        <img height="400px" width="400px" src="http://7xjbiz.com1.z0.glb.clouddn.com/github/socJAdzByYtu5maI">
+        <img src="http://7xjbiz.com1.z0.glb.clouddn.com/github/socJAdzByYtu5maI">
      </a>
      <br/>
-     <b>A</b>(guia) <b>P</b>(rocess) <b>M</b>(anager)
+     <b>PMGO</b>
      <br/><br/>
 </div>
 # APM - Aguia Process Manager
