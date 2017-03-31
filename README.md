@@ -6,7 +6,7 @@
      <b>PMGO</b>
      <br/><br/>
 </div>
-# PMGO
+# PMGO 
 PMGO is a lightweight process manager written in Golang for Golang applications. It helps you keep your applications alive forever, reload and start them from the source code.
 
 Starting an application is easy:
@@ -23,7 +23,7 @@ it is under `GOPATH`
 ## Install pmgo
 
 ```bash
-$ go get github.com/topfreegames/apm
+$ go get github.com/struCoder/pmgo
 ```
 
 ## Start APM
@@ -34,7 +34,7 @@ $ pmgo serve
 ```
 If no config file is provided, it will default to a folder '~/.pmgo' where `pmgo` is first started.
 
-## Stop APM
+## Stop PMGO
 
 ```bash
 $ pmgo kill
@@ -61,7 +61,7 @@ $ pmgo delete app-name
 $ pmgo serve
 $ pmgo kill
 
-$ pmgo start source app-name --keep-alive   # Compile, start, daemonize and auto  restart application.
+$ pmgo start source app-name --keep-alive                    # Compile, start, daemonize and auto  restart application.
 $ pmgo restart app-name                                      # Restart a previously saved process
 $ pmgo stop app-name                                         # Stop application.
 $ pmgo delete app-name                                       # Delete application forever.
