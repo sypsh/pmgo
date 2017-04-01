@@ -6,6 +6,10 @@
      <b>PMGO</b>
      <br/><br/>
 </div>
+[![Join the chat at https://gitter.im/getpmgo/Lobby](https://badges.gitter.im/getpmgo/Lobby.svg)](https://gitter.im/getpmgo/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Go Report Card](https://goreportcard.com/badge/github.com/struCoder/pmgo)](https://goreportcard.com/report/github.com/struCoder/pmgo)
+[![GoDoc](https://godoc.org/github.com/struCoder/pmgo?status.svg)](https://godoc.org/github.com/struCoder/pmgo)
+
 # PMGO 
 PMGO is a lightweight process manager written in Golang for Golang applications. It helps you keep your applications alive forever, reload and start them from the source code.
 
