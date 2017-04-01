@@ -95,7 +95,7 @@ func InitMaster(configFile string) *Master {
 	master.Revive()
 	log.Infof("All procs revived...")
 	go master.WatchProcs()
-	go master.SaveProcsLoop()
+	// go master.SaveProcsLoop()
 	go master.UpdateStatus()
 	return master
 }
@@ -115,7 +115,6 @@ func (master *Master) WatchProcs() {
 			log.Warnf("Proc %s was supposed to be dead, but it is alive.", proc.Identifier())
 		}
 		master.Lock()
-		proc.AddRestart()
 		err := master.restart(proc)
 		master.Unlock()
 		if err != nil {
@@ -169,11 +168,14 @@ func (master *Master) ListProcs() []process.ProcContainer {
 
 // RestartProcess will restart a process.
 func (master *Master) RestartProcess(name string) error {
-	err := master.StopProcess(name)
-	if err != nil {
+	if proc, ok := master.Procs[name]; ok {
+		master.Lock()
+		err := master.restart(proc)
+		master.Unlock()
 		return err
 	}
-	return master.StartProcess(name)
+	return errors.New("unknow process.")
+
 }
 
 // StartProcess will a start a process.
@@ -248,6 +250,7 @@ func (master *Master) start(proc process.ProcContainer) error {
 		master.Watcher.AddProcWatcher(proc)
 		proc.SetStatus("running")
 		proc.SetUptime()
+		master.saveProcsWrapper()
 	}
 	return nil
 }
@@ -271,6 +274,7 @@ func (master *Master) stop(proc process.ProcContainer) error {
 			proc.SetUptime()
 		}
 		log.Infof("Proc %s successfully stopped.", proc.Identifier())
+		master.saveProcsWrapper()
 	}
 	return nil
 }
@@ -300,23 +304,27 @@ func (master *Master) updateStatus(proc process.ProcContainer) {
 
 // NOT thread safe method. Lock should be acquire before calling it.
 func (master *Master) restart(proc process.ProcContainer) error {
+	// restat count +1
+	proc.AddRestart()
 	err := master.stop(proc)
 	if err != nil {
 		return err
 	}
-	return master.start(proc)
+	err = master.start(proc)
+	master.saveProcsWrapper()
+	return err
 }
 
 // SaveProcsLoop will loop forever to save the list of procs onto the proc file.
-func (master *Master) SaveProcsLoop() {
-	for {
-		log.Infof("Saving list of procs.")
-		master.Lock()
-		master.saveProcsWrapper()
-		master.Unlock()
-		time.Sleep(5 * time.Minute)
-	}
-}
+// func (master *Master) SaveProcsLoop() {
+// 	for {
+// 		log.Infof("Saving list of procs.")
+// 		master.Lock()
+// 		master.saveProcsWrapper()
+// 		master.Unlock()
+// 		time.Sleep(5 * time.Minute)
+// 	}
+// }
 
 // Stop will stop APM and all of its running procs.
 func (master *Master) Stop() error {
