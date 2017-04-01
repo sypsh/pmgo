@@ -1,9 +1,12 @@
 package preparable
 
-import "os/exec"
-import "strings"
+import (
+	"os/exec"
+	"strings"
 
-import "github.com/struCoder/pmgo/lib/process"
+	"github.com/struCoder/pmgo/lib/process"
+)
+
 
 type ProcPreparable interface {
 	PrepareBin() ([]byte, error)

@@ -1,11 +1,14 @@
 package process
 
-import "os"
-import "syscall"
-import "errors"
-import "strconv"
+import (
+	"os"
+	"syscall"
+	"errors"
+	"strconv"
 
-import "github.com/struCoder/pmgo/lib/utils"
+	"github.com/struCoder/pmgo/lib/utils"
+)
+
 
 type ProcContainer interface {
 	Start() error

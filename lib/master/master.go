@@ -18,20 +18,24 @@ It will start the remote client and return the instance so you can use to initia
 
 package master
 
-import "os"
-import "path"
-import "errors"
-import "fmt"
-import "sync"
+import (
+	"os"
+	"path"
+	"errors"
+	"fmt"
+	"sync"
 
-import "time"
+	"time"
 
-import "github.com/struCoder/pmgo/lib/preparable"
-import "github.com/struCoder/pmgo/lib/process"
-import "github.com/struCoder/pmgo/lib/utils"
-import "github.com/struCoder/pmgo/lib/watcher"
+	"github.com/struCoder/pmgo/lib/preparable"
+	"github.com/struCoder/pmgo/lib/process"
+	"github.com/struCoder/pmgo/lib/utils"
+	"github.com/struCoder/pmgo/lib/watcher"
 
-import log "github.com/Sirupsen/logrus"
+	log "github.com/Sirupsen/logrus"
+)
+
+
 
 // Master is the main module that keeps everything in place and execute
 // the necessary actions to keep the process running as they should be.

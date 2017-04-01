@@ -1,13 +1,13 @@
 /*
-APM is a lightweight process manager written in Golang for Golang applications. It helps you keep all of your applications alive forever, if you want to. You can also reload, start, stop, delete and query status on the fly.
+PMGO is a lightweight process manager written in Golang for Golang applications. It helps you keep all of your applications alive forever, if you want to. You can also reload, start, stop, delete and query status on the fly.
 
-APM also provide a way to start a process by compiling a Golang project source code.
+PMGO also provide a way to start a process by compiling a Golang project source code.
 
-The main APM module is the Master module, it's the glue that keep everything running as it should be.
+The main PMGO module is the Master module, it's the glue that keep everything running as it should be.
 
-If you need to use the remote version of APM, take a look at RemoteMaster on Master package.
+If you need to use the remote version of PMGO, take a look at RemoteMaster on Master package.
 
-To use the remote version of APM, use:
+To use the remote version of PMGO, use:
 
 - remoteServer := master.StartRemoteMasterServer(dsn, configFile)
 
@@ -23,20 +23,23 @@ It will start the remote client and return the instance so you can use to initia
 */
 package main
 
-// import "github.com/kardianos/osext"
-import "gopkg.in/alecthomas/kingpin.v2"
-import "github.com/struCoder/pmgo/lib/cli"
-import "github.com/struCoder/pmgo/lib/master"
+import (
+	"gopkg.in/alecthomas/kingpin.v2"
+	"github.com/struCoder/pmgo/lib/cli"
+	"github.com/struCoder/pmgo/lib/master"
 
-import "github.com/sevlyar/go-daemon"
+	"github.com/sevlyar/go-daemon"
 
-import "path"
-import "path/filepath"
-import "syscall"
-import "os"
-import "os/signal"
+	"path"
+	"path/filepath"
+	"syscall"
+	"os"
+	"os/signal"
 
-import "github.com/Sirupsen/logrus"
+	log "github.com/Sirupsen/logrus"
+	"fmt"
+)
+
 
 var (
 	app     = kingpin.New("pmgo", "Aguia Process Manager.")
@@ -73,11 +76,11 @@ var (
 
 	status = app.Command("list", "Get pmgo list.")
 
-	log = logrus.New()
+	version = app.Command("version", "get version")
+	currentVersion = "0.1.0"
 )
 
 func main() {
-	log.Out = os.Stdout
 	switch kingpin.MustParse(app.Parse(os.Args[1:])) {
 	case serveStop.FullCommand():
 		stopRemoteMasterServer()
@@ -108,6 +111,8 @@ func main() {
 		// checkRemoteMasterServer()
 		cli := cli.InitCli(*dns, *timeout)
 		cli.Status()
+	case version.FullCommand():
+		fmt.Println(currentVersion)
 	}
 }
 

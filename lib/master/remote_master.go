@@ -1,12 +1,15 @@
 package master
 
-import "net"
-import "net/rpc"
-import "log"
-import "time"
-import "fmt"
+import (
+	"net"
+	"net/rpc"
+	"log"
+	"time"
+	"fmt"
 
-import "github.com/struCoder/pmgo/lib/process"
+	"github.com/struCoder/pmgo/lib/process"
+)
+
 
 // RemoteMaster is a struct that holds the master instance.
 type RemoteMaster struct {

@@ -1,8 +1,10 @@
 package utils
 
-import "sync"
-import "os"
-import "syscall"
+import (
+	"sync"
+	"os"
+	"syscall"
+)
 
 // FileMutex is a wrapper used to create lock on files.
 type FileMutex struct {

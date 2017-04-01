@@ -1,11 +1,13 @@
 package cli
 
-import "github.com/struCoder/pmgo/lib/master"
+import (
+	"github.com/struCoder/pmgo/lib/master"
+	"math"
+	"log"
+	"time"
+	"fmt"
+)
 
-import "math"
-import "log"
-import "time"
-import "fmt"
 
 // Cli is the command line client.
 type Cli struct {
