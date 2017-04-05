@@ -1,6 +1,6 @@
 package process
 
-import(
+import (
 	"time"
 )
 // ProcStatus is a wrapper with the process current status.
@@ -8,7 +8,7 @@ type ProcStatus struct {
 	Status		string
 	Restarts	int
 	Time			time.Time
-	Uptime		time.Duration
+	Uptime		string
 }
 
 // SetStatus will set the process string status.
@@ -27,5 +27,5 @@ func (proc_status *ProcStatus) InitUptime() {
 
 // process uptime 
 func (proc_status *ProcStatus) SetUptime() {
-  proc_status.Uptime = time.Since(proc_status.Time)
+  proc_status.Uptime = time.Since(proc_status.Time).String()
 }

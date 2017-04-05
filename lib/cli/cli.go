@@ -108,20 +108,20 @@ func (cli *Cli) Status() {
 		utils.PadString("pid", 13),
 		utils.PadString("name", maxName + 2),
 		utils.PadString("status", 16),
-		utils.PadString("keep-alive", 15))
+		utils.PadString("uptime", 15))
 	fmt.Println(topBar)
 	fmt.Println(infoBar)
 	for id := range procResponse.Procs {
 		proc := procResponse.Procs[id]
-		kp := "True"
-		if !proc.KeepAlive {
-			kp = "False"
-		}
+		// kp := "True"
+		// if !proc.KeepAlive {
+		// 	kp = "False"
+		// }
 		fmt.Printf("|%s|%s|%s|%s|\n",
 			utils.PadString(fmt.Sprintf("%d", proc.Pid), 13),
 			utils.PadString(proc.Name, maxName + 2),
 			utils.PadString(proc.Status.Status, 16),
-			utils.PadString(kp, 15))
+			utils.PadString(proc.Status.Uptime, 15))
 	}
 	fmt.Println(topBar)
 }

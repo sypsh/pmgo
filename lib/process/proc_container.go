@@ -176,6 +176,8 @@ func (proc *Proc) GetPid() int {
 
 // Return proc current status
 func (proc *Proc) GetStatus() *ProcStatus {
+	// update uptime
+	proc.SetUptime()
 	return proc.Status;
 }
 
@@ -188,6 +190,7 @@ func (proc *Proc) SetStatus(status string) {
 func (proc *Proc) SetUptime() {
 	proc.Status.SetUptime()
 }
+
 
 // Proc identifier that will be used by watcher to keep track of its processes
 func (proc *Proc) Identifier() string {

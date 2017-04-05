@@ -33,7 +33,7 @@ type ProcDataResponse struct {
 	Name string
 	Pid int
 	Status *process.ProcStatus
-	KeepAlive bool
+	// KeepAlive bool
 }
 
 type ProcResponse struct {
@@ -63,7 +63,7 @@ func (remote_master *RemoteMaster) StartGoBin(goBin *GoBin, ack *bool) error {
 	if err != nil {
 		return err
 	}
-	// if current proc is exist just return nil
+	// if current proc is exist just return
 	if isExist {
 		return nil;
 	}
@@ -108,7 +108,7 @@ func (remote_master *RemoteMaster) MonitStatus(req string, response *ProcRespons
 			Name: proc.Identifier(),
 			Pid: proc.GetPid(),
 			Status: proc.GetStatus(),
-			KeepAlive: proc.ShouldKeepAlive(),
+			// KeepAlive: proc.ShouldKeepAlive(),
 		}
 		procsResponse = append(procsResponse, procData)
 	}
