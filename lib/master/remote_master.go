@@ -59,6 +59,14 @@ func (remote_master *RemoteMaster) Resurrect(req string, ack *bool) error {
 // and keep it alive if KeepAlive is set to true.
 // It returns an error and binds true to ack pointer.
 func (remote_master *RemoteMaster) StartGoBin(goBin *GoBin, ack *bool) error {
+	isExist, err := remote_master.master.IsExistProc(goBin.Name)
+	if err != nil {
+		return err
+	}
+	// if current proc is exist just return nil
+	if isExist {
+		return nil;
+	}
 	preparable, output, err := remote_master.master.Prepare(goBin.SourcePath, goBin.Name, "go", goBin.KeepAlive, goBin.Args)
 	*ack = true
 	if err != nil {
@@ -167,13 +175,14 @@ func (client *RemoteClient) Resurrect() error {
 // StartGoBin is a wrapper that calls the remote StartsGoBin.
 // It returns an error in case there's any.
 func (client *RemoteClient) StartGoBin(sourcePath string, name string, keepAlive bool, args []string) error {
+	var started bool
 	goBin := &GoBin{
 		SourcePath: sourcePath,
 		Name:       name,
 		KeepAlive:  keepAlive,
 		Args:       args,
 	}
-	var started bool
+	
 	return client.conn.Call("RemoteMaster.StartGoBin", goBin, &started)
 }
 
@@ -212,3 +221,4 @@ func (client *RemoteClient) MonitStatus() (ProcResponse, error) {
 	err := client.conn.Call("RemoteMaster.MonitStatus", "", &response)
 	return *response, err
 }
+

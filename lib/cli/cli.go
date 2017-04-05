@@ -1,11 +1,13 @@
 package cli
 
 import (
-	"github.com/struCoder/pmgo/lib/master"
+	
 	"math"
 	"log"
 	"time"
 	"fmt"
+	"github.com/struCoder/pmgo/lib/master"
+	"github.com/struCoder/pmgo/lib/utils"
 )
 
 
@@ -103,10 +105,10 @@ func (cli *Cli) Status() {
 		topBar += "-"
 	}
 	infoBar := fmt.Sprintf("|%s|%s|%s|%s|",
-		PadString("pid", 13),
-		PadString("name", maxName + 2),
-		PadString("status", 16),
-		PadString("keep-alive", 15))
+		utils.PadString("pid", 13),
+		utils.PadString("name", maxName + 2),
+		utils.PadString("status", 16),
+		utils.PadString("keep-alive", 15))
 	fmt.Println(topBar)
 	fmt.Println(infoBar)
 	for id := range procResponse.Procs {
@@ -116,29 +118,10 @@ func (cli *Cli) Status() {
 			kp = "False"
 		}
 		fmt.Printf("|%s|%s|%s|%s|\n",
-			PadString(fmt.Sprintf("%d", proc.Pid), 13),
-			PadString(proc.Name, maxName + 2),
-			PadString(proc.Status.Status, 16),
-			PadString(kp, 15))
+			utils.PadString(fmt.Sprintf("%d", proc.Pid), 13),
+			utils.PadString(proc.Name, maxName + 2),
+			utils.PadString(proc.Status.Status, 16),
+			utils.PadString(kp, 15))
 	}
 	fmt.Println(topBar)
-}
-
-// PadString will add totalSize spaces evenly to the right and left side of str.
-// Returns str after applying the pad.
-func PadString(str string, totalSize int) string {
-	turn := 0
-	for {
-		if len(str) >= totalSize {
-			break
-		}
-		if turn == 0 {
-			str = " " + str
-			turn ^= 1
-		} else {
-			str = str + " "
-			turn ^= 1
-		}
-	}
-	return str
 }

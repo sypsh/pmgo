@@ -360,3 +360,16 @@ func (master *Master) saveProcsWrapper() error {
 func (master *Master) getConfigPath() string {
 	return path.Join(master.SysFolder, "config.toml")
 }
+
+func (master *Master) IsExistProc(procName string) (bool, error) {
+	if proc, ok := master.Procs[procName]; ok {
+		if !proc.IsAlive() {
+			err := master.RestartProcess(procName)
+			if err != nil {
+				return false, err
+			}
+		}
+		return true, nil
+	}
+	return false, nil
+}

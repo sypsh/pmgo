@@ -57,14 +57,11 @@ var (
 	start           = app.Command("start", "start and daemonize an app.")
 	startSourcePath = start.Arg("start go file", "go file.").Required().String()
 	startName       = start.Arg("name", "Process name.").Required().String()
-	startKeepAlive  = start.Flag("keep-alive", "Keep process alive forever.").Required().Bool()
+	startKeepAlive  = true
 	startArgs       = start.Flag("args", "External args.").Strings()
 
 	restart     = app.Command("restart", "Restart a process.")
 	restartName = restart.Arg("name", "Process name.").Required().String()
-
-	// start     = app.Command("start", "Start a process.")
-	// startName = start.Arg("name", "Process name.").Required().String()
 
 	stop     = app.Command("stop", "Stop a process.")
 	stopName = stop.Arg("name", "Process name.").Required().String()
@@ -91,16 +88,15 @@ func main() {
 		cli.Resurrect()
 	case start.FullCommand():
 		cli := cli.InitCli(*dns, *timeout)
-		cli.StartGoBin(*startSourcePath, *startName, *startKeepAlive, *startArgs)
+		cli.StartGoBin(*startSourcePath, *startName, startKeepAlive, *startArgs)
+		cli.Status()
 	case restart.FullCommand():
 		cli := cli.InitCli(*dns, *timeout)
 		cli.RestartProcess(*restartName)
-	// case start.FullCommand():
-	// 	cli := cli.InitCli(*dns, *timeout)
-	// 	cli.StartProcess(*startName)
 	case stop.FullCommand():
 		cli := cli.InitCli(*dns, *timeout)
 		cli.StopProcess(*stopName)
+		cli.Status()
 	case delete.FullCommand():
 		cli := cli.InitCli(*dns, *timeout)
 		cli.DeleteProcess(*deleteName)

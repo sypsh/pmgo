@@ -33,7 +33,7 @@ it is under `GOPATH`
 $ go get github.com/struCoder/pmgo
 ```
 
-## Start APM
+## Start pmgo
 
 In order to properly use APM, you always need to start a server. This will be changed in the next version, but in the meantime you need to run the command bellow to start using APM.
 ```bash
@@ -41,7 +41,7 @@ $ pmgo serve
 ```
 If no config file is provided, it will default to a folder '~/.pmgo' where `pmgo` is first started.
 
-## Stop PMGO
+## Stop pmgo
 
 ```bash
 $ pmgo kill
