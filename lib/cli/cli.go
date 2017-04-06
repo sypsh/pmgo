@@ -6,6 +6,7 @@ import (
 	"log"
 	"time"
 	"fmt"
+	"strconv"
 	"github.com/struCoder/pmgo/lib/master"
 	"github.com/struCoder/pmgo/lib/utils"
 )
@@ -99,16 +100,17 @@ func (cli *Cli) Status() {
 		proc := procResponse.Procs[id]
 		maxName = int(math.Max(float64(maxName), float64(len(proc.Name))))
 	}
-	totalSize := maxName + 51;
+	totalSize := maxName + 65;
 	topBar := ""
 	for i := 1; i <= totalSize; i += 1 {
 		topBar += "-"
 	}
-	infoBar := fmt.Sprintf("|%s|%s|%s|%s|",
+	infoBar := fmt.Sprintf("|%s|%s|%s|%s|%s|",
 		utils.PadString("pid", 13),
 		utils.PadString("name", maxName + 2),
 		utils.PadString("status", 16),
-		utils.PadString("uptime", 15))
+		utils.PadString("uptime", 15),
+		utils.PadString("restart", 13))
 	fmt.Println(topBar)
 	fmt.Println(infoBar)
 	for id := range procResponse.Procs {
@@ -117,11 +119,12 @@ func (cli *Cli) Status() {
 		// if !proc.KeepAlive {
 		// 	kp = "False"
 		// }
-		fmt.Printf("|%s|%s|%s|%s|\n",
+		fmt.Printf("|%s|%s|%s|%s|%s|\n",
 			utils.PadString(fmt.Sprintf("%d", proc.Pid), 13),
 			utils.PadString(proc.Name, maxName + 2),
 			utils.PadString(proc.Status.Status, 16),
-			utils.PadString(proc.Status.Uptime, 15))
+			utils.PadString(proc.Status.Uptime, 15),
+			utils.PadString(strconv.Itoa(proc.Status.Restarts), 13))
 	}
 	fmt.Println(topBar)
 }
