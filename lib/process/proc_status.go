@@ -2,13 +2,14 @@ package process
 
 import (
 	"time"
+	"github.com/struCoder/pmgo/lib/utils"
 )
 // ProcStatus is a wrapper with the process current status.
 type ProcStatus struct {
-	Status		string
-	Restarts	int
-	Time			time.Time
-	Uptime		string
+	Status			string
+	Restarts		int
+	StartTime		int64
+	Uptime			string
 }
 
 // SetStatus will set the process string status.
@@ -22,10 +23,10 @@ func (proc_status *ProcStatus) AddRestart() {
 }
 
 func (proc_status *ProcStatus) InitUptime() {
-	proc_status.Time = time.Now()
+	proc_status.StartTime = time.Now().Unix()
 }
 
 // process uptime 
 func (proc_status *ProcStatus) SetUptime() {
-  proc_status.Uptime = time.Since(proc_status.Time).String()
+  proc_status.Uptime = utils.FormatUptime(proc_status.StartTime, time.Now().Unix())
 }
