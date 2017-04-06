@@ -9,7 +9,7 @@ const (
 	HOUR = MINUTE * 60
 	DAY = HOUR * 24
 	MONTH = DAY * 30
-	YEAR = MONTH * 365
+	YEAR = MONTH * 12
 )
 
 // PadString will add totalSize spaces evenly to the right and left side of str.
