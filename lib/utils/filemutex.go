@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"sync"
 	"os"
+	"sync"
 	"syscall"
 )
 

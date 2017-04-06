@@ -24,22 +24,22 @@ It will start the remote client and return the instance so you can use to initia
 package main
 
 import (
-	"gopkg.in/alecthomas/kingpin.v2"
 	"github.com/struCoder/pmgo/lib/cli"
 	"github.com/struCoder/pmgo/lib/master"
+	"gopkg.in/alecthomas/kingpin.v2"
 
 	"github.com/sevlyar/go-daemon"
 
+	"os"
+	"os/signal"
 	"path"
 	"path/filepath"
 	"syscall"
-	"os"
-	"os/signal"
+
+	"fmt"
 
 	log "github.com/Sirupsen/logrus"
-	"fmt"
 )
-
 
 var (
 	app     = kingpin.New("pmgo", "Aguia Process Manager.")
@@ -52,7 +52,7 @@ var (
 	serve           = app.Command("serve", "Create pmgo daemon.")
 	serveConfigFile = serve.Flag("config-file", "Config file location").String()
 
-	resurrect     = app.Command("resurrect", "Resurrect all previously save processes.")
+	resurrect = app.Command("resurrect", "Resurrect all previously save processes.")
 
 	start           = app.Command("start", "start and daemonize an app.")
 	startSourcePath = start.Arg("start go file", "go file.").Required().String()
@@ -73,7 +73,7 @@ var (
 
 	status = app.Command("list", "Get pmgo list.")
 
-	version = app.Command("version", "get version")
+	version        = app.Command("version", "get version")
 	currentVersion = "0.1.0"
 )
 
@@ -149,7 +149,7 @@ func checkRemoteMasterServer() {
 	ctx := getCtx()
 	if ok, _, _ := isDaemonRunning(ctx); !ok {
 		startRemoteMasterServer()
-	}	
+	}
 }
 
 func startRemoteMasterServer() {
@@ -169,7 +169,7 @@ func startRemoteMasterServer() {
 		return
 	}
 	defer ctx.Release()
-	
+
 	log.Info("Starting remote master server...")
 	remoteMaster := master.StartRemoteMasterServer(*dns, *serveConfigFile)
 

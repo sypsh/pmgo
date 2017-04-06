@@ -7,7 +7,6 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
-
 // WriteFile will write the info on array of bytes b to filepath. It will set the file
 // permission mode to 0660
 // Returns an error in case there's any.

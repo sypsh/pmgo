@@ -1,15 +1,14 @@
 package master
 
 import (
+	"fmt"
+	"log"
 	"net"
 	"net/rpc"
-	"log"
 	"time"
-	"fmt"
 
 	"github.com/struCoder/pmgo/lib/process"
 )
-
 
 // RemoteMaster is a struct that holds the master instance.
 type RemoteMaster struct {
@@ -29,16 +28,19 @@ type GoBin struct {
 	Args       []string // Args is an array containing all the extra args that will be passed to the binary after compilation.
 }
 
+// ProcDataResponse is a struct than about proc attr
 type ProcDataResponse struct {
-	Name string
-	Pid int
+	Name   string
+	Pid    int
 	Status *process.ProcStatus
 	// KeepAlive bool
 }
 
+// ProcResponse is procs attr array
 type ProcResponse struct {
 	Procs []*ProcDataResponse
 }
+
 // Save will save the current running and stopped processes onto a file.
 // Returns an error in case there's any.
 func (remote_master *RemoteMaster) Save(req string, ack *bool) error {
@@ -65,7 +67,7 @@ func (remote_master *RemoteMaster) StartGoBin(goBin *GoBin, ack *bool) error {
 	}
 	// if current proc is exist just return
 	if isExist {
-		return nil;
+		return nil
 	}
 	preparable, output, err := remote_master.master.Prepare(goBin.SourcePath, goBin.Name, "go", goBin.KeepAlive, goBin.Args)
 	*ack = true
@@ -104,15 +106,15 @@ func (remote_master *RemoteMaster) MonitStatus(req string, response *ProcRespons
 	procsResponse := []*ProcDataResponse{}
 	for id := range procs {
 		proc := procs[id]
-		procData := &ProcDataResponse {
-			Name: proc.Identifier(),
-			Pid: proc.GetPid(),
+		procData := &ProcDataResponse{
+			Name:   proc.Identifier(),
+			Pid:    proc.GetPid(),
 			Status: proc.GetStatus(),
 			// KeepAlive: proc.ShouldKeepAlive(),
 		}
 		procsResponse = append(procsResponse, procData)
 	}
-	*response = ProcResponse {
+	*response = ProcResponse{
 		Procs: procsResponse,
 	}
 	return nil
@@ -182,7 +184,7 @@ func (client *RemoteClient) StartGoBin(sourcePath string, name string, keepAlive
 		KeepAlive:  keepAlive,
 		Args:       args,
 	}
-	
+
 	return client.conn.Call("RemoteMaster.StartGoBin", goBin, &started)
 }
 
@@ -221,4 +223,3 @@ func (client *RemoteClient) MonitStatus() (ProcResponse, error) {
 	err := client.conn.Call("RemoteMaster.MonitStatus", "", &response)
 	return *response, err
 }
-
