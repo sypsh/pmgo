@@ -1,20 +1,35 @@
 <div align="center">
-     <a>
-        <img src="http://7xjbiz.com1.z0.glb.clouddn.com/github/socJAdzByYtu5maI">
-     </a>
-     <br/>
-     <b>PMGO</b>
-     <br/><br/>
+<a>
+   <img src="http://7xjbiz.com1.z0.glb.clouddn.com/github/socJAdzByYtu5maI">
+</a>
+<br/>
+<b>PMGO</b>
+<br/><br/>
+<a href="https://circleci.com/gh/struCoder/pmgo">
+<img src="https://circleci.com/gh/struCoder/pmgo.svg?&style=shield&circle-token=0fa8ccfc85928edc54a0d7d848cbc784e31813ff" alt="Build Status">
+</a>
+
+<a href="http://commitizen.github.io/cz-cli">
+  <img src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg" alt="Commitizen friendly" />
+</a>
+
+<a href="https://gitter.im/getpmgo/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge">
+  <img src="https://badges.gitter.im/getpmgo/Lobby.svg" alt="Join the chat" />
+</a>
+
+<a href="https://goreportcard.com/report/github.com/struCoder/pmgo">
+  <img src="https://goreportcard.com/badge/github.com/struCoder/pmgo" alt="Go Report Card" />
+</a>
+
+<a href="https://godoc.org/github.com/struCoder/pmgo">
+  <img src="https://godoc.org/github.com/struCoder/pmgo?status.svg" alt="GoDoc" />
+</a>
+<br/><br/>
 </div>
 
 
 # PMGO 
 PMGO is a lightweight process manager written in Golang for Golang applications. It helps you keep your applications alive forever, reload and start them from the source code.
-
-[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/) 
-[![Join the chat at https://gitter.im/getpmgo/Lobby](https://badges.gitter.im/getpmgo/Lobby.svg)](https://gitter.im/getpmgo/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) 
-[![Go Report Card](https://goreportcard.com/badge/github.com/struCoder/pmgo)](https://goreportcard.com/report/github.com/struCoder/pmgo) 
-[![GoDoc](https://godoc.org/github.com/struCoder/pmgo?status.svg)](https://godoc.org/github.com/struCoder/pmgo)
 
 Starting an application is easy:
 ```bash
