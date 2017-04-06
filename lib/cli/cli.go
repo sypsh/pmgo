@@ -100,17 +100,17 @@ func (cli *Cli) Status() {
 		proc := procResponse.Procs[id]
 		maxName = int(math.Max(float64(maxName), float64(len(proc.Name))))
 	}
-	totalSize := maxName + 65
+	totalSize := maxName + 48
 	topBar := ""
 	for i := 1; i <= totalSize; i++ {
 		topBar += "-"
 	}
 	infoBar := fmt.Sprintf("|%s|%s|%s|%s|%s|",
-		utils.PadString("pid", 13),
+		utils.PadString("pid", 9),
 		utils.PadString("name", maxName+2),
-		utils.PadString("status", 16),
-		utils.PadString("uptime", 15),
-		utils.PadString("restart", 13))
+		utils.PadString("status", 12),
+		utils.PadString("uptime", 10),
+		utils.PadString("restart", 9))
 	fmt.Println(topBar)
 	fmt.Println(infoBar)
 	for id := range procResponse.Procs {
@@ -120,11 +120,11 @@ func (cli *Cli) Status() {
 		// 	kp = "False"
 		// }
 		fmt.Printf("|%s|%s|%s|%s|%s|\n",
-			utils.PadString(fmt.Sprintf("%d", proc.Pid), 13),
+			utils.PadString(fmt.Sprintf("%d", proc.Pid), 9),
 			utils.PadString(proc.Name, maxName+2),
-			utils.PadString(proc.Status.Status, 16),
-			utils.PadString(proc.Status.Uptime, 15),
-			utils.PadString(strconv.Itoa(proc.Status.Restarts), 13))
+			utils.PadString(proc.Status.Status, 12),
+			utils.PadString(proc.Status.Uptime, 10),
+			utils.PadString(strconv.Itoa(proc.Status.Restarts), 9))
 	}
 	fmt.Println(topBar)
 }
