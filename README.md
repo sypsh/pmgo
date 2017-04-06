@@ -1,62 +1,63 @@
 <div align="center">
      <a>
-        <img height="400px" width="400px" src="https://cloud.githubusercontent.com/assets/5413599/12247882/2fcb1ca6-b89d-11e5-933e-efade26acf13.jpg">
+        <img src="http://7xjbiz.com1.z0.glb.clouddn.com/github/socJAdzByYtu5maI">
      </a>
      <br/>
-     <b>A</b>(guia) <b>P</b>(rocess) <b>M</b>(anager)
+     <b>PMGO</b>
      <br/><br/>
 </div>
-# APM - Aguia Process Manager
-APM is a lightweight process manager written in Golang for Golang applications. It helps you keep your applications alive forever, reload and start them from the source code.
 
-[![ReportCard](http://goreportcard.com/badge/topfreegames/apm)](http://goreportcard.com/badge/topfreegames/apm)
-[![GoDoc](https://godoc.org/github.com/topfreegames/apm?status.svg)](https://godoc.org/github.com/topfreegames/apm)
+
+# PMGO 
+PMGO is a lightweight process manager written in Golang for Golang applications. It helps you keep your applications alive forever, reload and start them from the source code.
+
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/) 
+[![Join the chat at https://gitter.im/getpmgo/Lobby](https://badges.gitter.im/getpmgo/Lobby.svg)](https://gitter.im/getpmgo/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) 
+[![Go Report Card](https://goreportcard.com/badge/github.com/struCoder/pmgo)](https://goreportcard.com/report/github.com/struCoder/pmgo) 
+[![GoDoc](https://godoc.org/github.com/struCoder/pmgo?status.svg)](https://godoc.org/github.com/struCoder/pmgo)
 
 Starting an application is easy:
 ```bash
-$ ./apm bin app-name --source="github.com/topfreegames/apm"
+$ pmgo start source app-name --keep-alive
 ```
 
 This will basically compile your project source code and start it as a
-daemon in the background. The application will have already be
-downloaded into `GOPATH` issuing something like
-
-	go get github.com/topfreegames/apm
+daemon in the background.
 
 You will probably be able to run anything in any directory, as long as
 it is under `GOPATH`
 
-## Install APM
+## Install pmgo
 
 ```bash
-$ go get github.com/topfreegames/apm
+$ go get github.com/struCoder/pmgo
 ```
 
-## Start APM
+## Start pmgo
 
 In order to properly use APM, you always need to start a server. This will be changed in the next version, but in the meantime you need to run the command bellow to start using APM.
 ```bash
-$ apm serve
+$ pmgo serve
 ```
-If no config file is provided, it will default to a folder '.apmenv' where `apm` is first started.
+If no config file is provided, it will default to a folder '~/.pmgo' where `pmgo` is first started.
 
-## Stop APM
+## Stop pmgo
 
 ```bash
-$ apm serve-stop
+$ pmgo kill
 ```
 
 ## Starting a new application
 If it's the first time you are starting a new golang application, you need to tell APM to first build its binary. Then you need to first run:
 ```bash
-$ apm bin app-name --source="github.com/yourproject/project"
+$ pmgo start source app-name --keep-alive
 ```
 
-This will automatically compile, start and daemonize your application. If you need to later on, stop, restart or delete your app from APM, you can just run normal commands using the app-name you specified. Example:
+This will automatically compile, start and daemonize your application. If you need to later on, stop, restart or delete your app from PMGO, you can just run normal commands using the app-name you specified. Example:
 ```bash
-$ apm stop app-name
-$ apm restart app-name
-$ apm delete app-name
+$ pmgo stop app-name
+$ pmgo restart app-name
+$ pmgo delete app-name
 ```
 
 ## Main features
@@ -64,21 +65,20 @@ $ apm delete app-name
 ### Commands overview
 
 ```bash
-$ apm serve --config-file="config/file/path.toml"
-$ apm serve-stop --config-file="config/file/path.toml"
+$ pmgo serve
+$ pmgo kill
 
-$ apm bin app-name --source="github.com/topfreegames/apm"   # Compile, start, daemonize and auto restart application.
-$ apm start app-name                                        # Start, daemonize and auto restart application.
-$ apm restart app-name                                      # Restart a previously saved process
-$ apm stop app-name                                         # Stop application.
-$ apm delete app-name                                       # Delete application forever.
+$ pmgo start source app-name --keep-alive                    # Compile, start, daemonize and auto  restart application.
+$ pmgo restart app-name                                      # Restart a previously saved process
+$ pmgo stop app-name                                         # Stop application.
+$ pmgo delete app-name                                       # Delete application forever.
 
-$ apm save                                                  # Save current process list
-$ apm resurrect                                             # Restore previously saved processes
+$ pmgo save                                                  # Save current process list
+$ pmgo resurrect                                             # Restore previously saved processes
 
-$ apm status                                                # Display status for each app.
+$ pmgo status                                                # Display status for each app.
 ```
 
 ### Managing process via HTTP
 
-You can also use all of the above commands via HTTP requests. Just set the flag ```--dns``` together with ```./apm serve``` and then you can use a remote client to start, stop, delete and query status for each app. 
+You can also use all of the above commands via HTTP requests. Just set the flag ```--dns``` together with ```./pmgo serve``` and then you can use a remote client to start, stop, delete and query status for each app. 

@@ -1,13 +1,13 @@
 /*
-APM is a lightweight process manager written in Golang for Golang applications. It helps you keep all of your applications alive forever, if you want to. You can also reload, start, stop, delete and query status on the fly.
+PMGO is a lightweight process manager written in Golang for Golang applications. It helps you keep all of your applications alive forever, if you want to. You can also reload, start, stop, delete and query status on the fly.
 
-APM also provide a way to start a process by compiling a Golang project source code.
+PMGO also provide a way to start a process by compiling a Golang project source code.
 
-The main APM module is the Master module, it's the glue that keep everything running as it should be.
+The main PMGO module is the Master module, it's the glue that keep everything running as it should be.
 
-If you need to use the remote version of APM, take a look at RemoteMaster on Master package.
+If you need to use the remote version of PMGO, take a look at RemoteMaster on Master package.
 
-To use the remote version of APM, use:
+To use the remote version of PMGO, use:
 
 - remoteServer := master.StartRemoteMasterServer(dsn, configFile)
 
@@ -23,45 +23,45 @@ It will start the remote client and return the instance so you can use to initia
 */
 package main
 
-import "github.com/kardianos/osext"
-import "gopkg.in/alecthomas/kingpin.v2"
-import "github.com/topfreegames/apm/lib/cli"
-import "github.com/topfreegames/apm/lib/master"
+import (
+	"github.com/struCoder/pmgo/lib/cli"
+	"github.com/struCoder/pmgo/lib/master"
+	"gopkg.in/alecthomas/kingpin.v2"
 
-import "github.com/sevlyar/go-daemon"
+	"github.com/sevlyar/go-daemon"
 
-import "path"
-import "path/filepath"
-import "syscall"
-import "os"
-import "os/signal"
+	"os"
+	"os/signal"
+	"path"
+	"path/filepath"
+	"syscall"
 
-import log "github.com/Sirupsen/logrus"
+	"fmt"
+
+	log "github.com/Sirupsen/logrus"
+)
 
 var (
-	app     = kingpin.New("apm", "Aguia Process Manager.")
+	app     = kingpin.New("pmgo", "Aguia Process Manager.")
 	dns     = app.Flag("dns", "TCP Dns host.").Default(":9876").String()
 	timeout = app.Flag("timeout", "Timeout to connect to client").Default("30s").Duration()
 
-	serveStop           = app.Command("serve-stop", "Stop APM server instance.")
+	serveStop           = app.Command("kill", "Kill daemon pmgo.")
 	serveStopConfigFile = serveStop.Flag("config-file", "Config file location").String()
 
-	serve           = app.Command("serve", "Create APM server instance.")
+	serve           = app.Command("serve", "Create pmgo daemon.")
 	serveConfigFile = serve.Flag("config-file", "Config file location").String()
 
-	resurrect     = app.Command("resurrect", "Resurrect all previously save processes.")
+	resurrect = app.Command("resurrect", "Resurrect all previously save processes.")
 
-	bin           = app.Command("bin", "Create bin process.")
-	binSourcePath = bin.Flag("source", "Go project source path. (Ex: github.com/topfreegames/apm)").Required().String()
-	binName       = bin.Arg("name", "Process name.").Required().String()
-	binKeepAlive  = bin.Flag("keep-alive", "Keep process alive forever.").Required().Bool()
-	binArgs       = bin.Flag("args", "External args.").Strings()
+	start           = app.Command("start", "start and daemonize an app.")
+	startSourcePath = start.Arg("start go file", "go file.").Required().String()
+	startName       = start.Arg("name", "Process name.").Required().String()
+	startKeepAlive  = true
+	startArgs       = start.Flag("args", "External args.").Strings()
 
 	restart     = app.Command("restart", "Restart a process.")
 	restartName = restart.Arg("name", "Process name.").Required().String()
-
-	start     = app.Command("start", "Start a process.")
-	startName = start.Arg("name", "Process name.").Required().String()
 
 	stop     = app.Command("stop", "Stop a process.")
 	stopName = stop.Arg("name", "Process name.").Required().String()
@@ -71,7 +71,10 @@ var (
 
 	save = app.Command("save", "Save a list of processes onto a file.")
 
-	status = app.Command("status", "Get APM status.")
+	status = app.Command("list", "Get pmgo list.")
+
+	version        = app.Command("version", "get version")
+	currentVersion = "0.1.0"
 )
 
 func main() {
@@ -83,18 +86,17 @@ func main() {
 	case resurrect.FullCommand():
 		cli := cli.InitCli(*dns, *timeout)
 		cli.Resurrect()
-	case bin.FullCommand():
+	case start.FullCommand():
 		cli := cli.InitCli(*dns, *timeout)
-		cli.StartGoBin(*binSourcePath, *binName, *binKeepAlive, *binArgs)
+		cli.StartGoBin(*startSourcePath, *startName, startKeepAlive, *startArgs)
+		cli.Status()
 	case restart.FullCommand():
 		cli := cli.InitCli(*dns, *timeout)
 		cli.RestartProcess(*restartName)
-	case start.FullCommand():
-		cli := cli.InitCli(*dns, *timeout)
-		cli.StartProcess(*startName)
 	case stop.FullCommand():
 		cli := cli.InitCli(*dns, *timeout)
 		cli.StopProcess(*stopName)
+		cli.Status()
 	case delete.FullCommand():
 		cli := cli.InitCli(*dns, *timeout)
 		cli.DeleteProcess(*deleteName)
@@ -102,8 +104,11 @@ func main() {
 		cli := cli.InitCli(*dns, *timeout)
 		cli.Save()
 	case status.FullCommand():
+		// checkRemoteMasterServer()
 		cli := cli.InitCli(*dns, *timeout)
 		cli.Status()
+	case version.FullCommand():
+		fmt.Println(currentVersion)
 	}
 }
 
@@ -121,15 +126,13 @@ func isDaemonRunning(ctx *daemon.Context) (bool, *os.Process, error) {
 	return true, d, nil
 }
 
-func startRemoteMasterServer() {
+func getCtx() *daemon.Context {
 	if *serveConfigFile == "" {
-		folderPath, err := osext.ExecutableFolder()
-		if err != nil {
-			log.Fatal(err)
-		}
-		*serveConfigFile = folderPath + "/.apmenv/config.toml"
-		os.MkdirAll(path.Dir(*serveConfigFile), 0777)
+		folderPath := os.Getenv("HOME")
+		*serveConfigFile = folderPath + "/.pmgo/config.toml"
+		os.MkdirAll(path.Dir(*serveConfigFile), 0755)
 	}
+
 	ctx := &daemon.Context{
 		PidFileName: path.Join(filepath.Dir(*serveConfigFile), "main.pid"),
 		PidFilePerm: 0644,
@@ -138,12 +141,25 @@ func startRemoteMasterServer() {
 		WorkDir:     "./",
 		Umask:       027,
 	}
+	return ctx
+}
+
+// if RemoteMasterServer not running, just run
+func checkRemoteMasterServer() {
+	ctx := getCtx()
+	if ok, _, _ := isDaemonRunning(ctx); !ok {
+		startRemoteMasterServer()
+	}
+}
+
+func startRemoteMasterServer() {
+	ctx := getCtx()
 	if ok, _, _ := isDaemonRunning(ctx); ok {
-		log.Info("Server is already running.")
+		log.Info("pmgo daemon is already running.")
 		return
 	}
 
-	log.Info("Starting daemon...")
+	log.Info("daemon started")
 	d, err := ctx.Reborn()
 	if err != nil {
 		log.Fatalf("Failed to reborn daemon due to %+v.", err)
@@ -152,7 +168,6 @@ func startRemoteMasterServer() {
 	if d != nil {
 		return
 	}
-
 	defer ctx.Release()
 
 	log.Info("Starting remote master server...")
@@ -174,23 +189,8 @@ func startRemoteMasterServer() {
 }
 
 func stopRemoteMasterServer() {
-	if *serveStopConfigFile == "" {
-		folderPath, err := osext.ExecutableFolder()
-		if err != nil {
-			log.Fatal(err)
-		}
-		*serveStopConfigFile = folderPath + "/.apmenv/config.toml"
-		os.MkdirAll(path.Dir(*serveStopConfigFile), 0777)
-	}
-	ctx := &daemon.Context{
-		PidFileName: path.Join(filepath.Dir(*serveStopConfigFile), "main.pid"),
-		PidFilePerm: 0644,
-		LogFileName: path.Join(filepath.Dir(*serveStopConfigFile), "main.log"),
-		LogFilePerm: 0640,
-		WorkDir:     "./",
-		Umask:       027,
-	}
-
+	log.Info("pmgo stopping...")
+	ctx := getCtx()
 	if ok, p, _ := isDaemonRunning(ctx); ok {
 		if err := p.Signal(syscall.Signal(syscall.SIGQUIT)); err != nil {
 			log.Fatalf("Failed to kill daemon %v", err)
@@ -199,4 +199,5 @@ func stopRemoteMasterServer() {
 		ctx.Release()
 		log.Info("instance is not running.")
 	}
+	log.Info("pmgo daemon terminated")
 }

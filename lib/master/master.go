@@ -18,20 +18,22 @@ It will start the remote client and return the instance so you can use to initia
 
 package master
 
-import "os"
-import "path"
-import "errors"
-import "fmt"
-import "sync"
+import (
+	"errors"
+	"fmt"
+	"os"
+	"path"
+	"sync"
 
-import "time"
+	"time"
 
-import "github.com/topfreegames/apm/lib/preparable"
-import "github.com/topfreegames/apm/lib/process"
-import "github.com/topfreegames/apm/lib/utils"
-import "github.com/topfreegames/apm/lib/watcher"
+	"github.com/struCoder/pmgo/lib/preparable"
+	"github.com/struCoder/pmgo/lib/process"
+	"github.com/struCoder/pmgo/lib/utils"
+	"github.com/struCoder/pmgo/lib/watcher"
 
-import log "github.com/Sirupsen/logrus"
+	log "github.com/Sirupsen/logrus"
+)
 
 // Master is the main module that keeps everything in place and execute
 // the necessary actions to keep the process running as they should be.
@@ -52,9 +54,9 @@ type Master struct {
 // Procs map can't be decoded as long as we use the ProcContainer interface
 type DecodableMaster struct {
 	SysFolder string
-	PidFile string
-	OutFile string
-	ErrFile string
+	PidFile   string
+	OutFile   string
+	ErrFile   string
 
 	Watcher *watcher.Watcher
 
@@ -75,16 +77,16 @@ func InitMaster(configFile string) *Master {
 
 	procs := make(map[string]process.ProcContainer)
 	for k, v := range decodableMaster.Procs {
-		procs[k] = v;
+		procs[k] = v
 	}
 	// We need this hack because toml decoder doesn't decode to interfaces
-	master := &Master {
+	master := &Master{
 		SysFolder: decodableMaster.SysFolder,
-		PidFile: decodableMaster.PidFile,
-		OutFile: decodableMaster.OutFile,
-		ErrFile: decodableMaster.ErrFile,
-		Watcher: decodableMaster.Watcher,
-		Procs: procs,
+		PidFile:   decodableMaster.PidFile,
+		OutFile:   decodableMaster.OutFile,
+		ErrFile:   decodableMaster.ErrFile,
+		Watcher:   decodableMaster.Watcher,
+		Procs:     procs,
 	}
 
 	if master.SysFolder == "" {
@@ -95,7 +97,7 @@ func InitMaster(configFile string) *Master {
 	master.Revive()
 	log.Infof("All procs revived...")
 	go master.WatchProcs()
-	go master.SaveProcsLoop()
+	// go master.SaveProcsLoop()
 	go master.UpdateStatus()
 	return master
 }
@@ -115,7 +117,6 @@ func (master *Master) WatchProcs() {
 			log.Warnf("Proc %s was supposed to be dead, but it is alive.", proc.Identifier())
 		}
 		master.Lock()
-		proc.AddRestart()
 		err := master.restart(proc)
 		master.Unlock()
 		if err != nil {
@@ -169,11 +170,14 @@ func (master *Master) ListProcs() []process.ProcContainer {
 
 // RestartProcess will restart a process.
 func (master *Master) RestartProcess(name string) error {
-	err := master.StopProcess(name)
-	if err != nil {
+	if proc, ok := master.Procs[name]; ok {
+		master.Lock()
+		err := master.restart(proc)
+		master.Unlock()
 		return err
 	}
-	return master.StartProcess(name)
+	return errors.New("unknow process.")
+
 }
 
 // StartProcess will a start a process.
@@ -247,6 +251,8 @@ func (master *Master) start(proc process.ProcContainer) error {
 		}
 		master.Watcher.AddProcWatcher(proc)
 		proc.SetStatus("running")
+		proc.SetUptime()
+		master.saveProcsWrapper()
 	}
 	return nil
 }
@@ -267,8 +273,10 @@ func (master *Master) stop(proc process.ProcContainer) error {
 			<-waitStop
 			proc.NotifyStopped()
 			proc.SetStatus("stopped")
+			proc.SetUptime()
 		}
 		log.Infof("Proc %s successfully stopped.", proc.Identifier())
+		master.saveProcsWrapper()
 	}
 	return nil
 }
@@ -298,23 +306,27 @@ func (master *Master) updateStatus(proc process.ProcContainer) {
 
 // NOT thread safe method. Lock should be acquire before calling it.
 func (master *Master) restart(proc process.ProcContainer) error {
+	// restat count +1
+	proc.AddRestart()
 	err := master.stop(proc)
 	if err != nil {
 		return err
 	}
-	return master.start(proc)
+	err = master.start(proc)
+	master.saveProcsWrapper()
+	return err
 }
 
 // SaveProcsLoop will loop forever to save the list of procs onto the proc file.
-func (master *Master) SaveProcsLoop() {
-	for {
-		log.Infof("Saving list of procs.")
-		master.Lock()
-		master.saveProcsWrapper()
-		master.Unlock()
-		time.Sleep(5 * time.Minute)
-	}
-}
+// func (master *Master) SaveProcsLoop() {
+// 	for {
+// 		log.Infof("Saving list of procs.")
+// 		master.Lock()
+// 		master.saveProcsWrapper()
+// 		master.Unlock()
+// 		time.Sleep(5 * time.Minute)
+// 	}
+// }
 
 // Stop will stop APM and all of its running procs.
 func (master *Master) Stop() error {
@@ -345,4 +357,18 @@ func (master *Master) saveProcsWrapper() error {
 
 func (master *Master) getConfigPath() string {
 	return path.Join(master.SysFolder, "config.toml")
+}
+
+// IsExistProc current proc whether exist
+func (master *Master) IsExistProc(procName string) (bool, error) {
+	if proc, ok := master.Procs[procName]; ok {
+		if !proc.IsAlive() {
+			err := master.RestartProcess(procName)
+			if err != nil {
+				return false, err
+			}
+		}
+		return true, nil
+	}
+	return false, nil
 }

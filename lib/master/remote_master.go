@@ -1,12 +1,14 @@
 package master
 
-import "net"
-import "net/rpc"
-import "log"
-import "time"
-import "fmt"
+import (
+	"fmt"
+	"log"
+	"net"
+	"net/rpc"
+	"time"
 
-import "github.com/topfreegames/apm/lib/process"
+	"github.com/struCoder/pmgo/lib/process"
+)
 
 // RemoteMaster is a struct that holds the master instance.
 type RemoteMaster struct {
@@ -26,16 +28,19 @@ type GoBin struct {
 	Args       []string // Args is an array containing all the extra args that will be passed to the binary after compilation.
 }
 
+// ProcDataResponse is a struct than about proc attr
 type ProcDataResponse struct {
-	Name string
-	Pid int
+	Name   string
+	Pid    int
 	Status *process.ProcStatus
-	KeepAlive bool
+	// KeepAlive bool
 }
 
+// ProcResponse is procs attr array
 type ProcResponse struct {
 	Procs []*ProcDataResponse
 }
+
 // Save will save the current running and stopped processes onto a file.
 // Returns an error in case there's any.
 func (remote_master *RemoteMaster) Save(req string, ack *bool) error {
@@ -56,6 +61,14 @@ func (remote_master *RemoteMaster) Resurrect(req string, ack *bool) error {
 // and keep it alive if KeepAlive is set to true.
 // It returns an error and binds true to ack pointer.
 func (remote_master *RemoteMaster) StartGoBin(goBin *GoBin, ack *bool) error {
+	isExist, err := remote_master.master.IsExistProc(goBin.Name)
+	if err != nil {
+		return err
+	}
+	// if current proc is exist just return
+	if isExist {
+		return nil
+	}
 	preparable, output, err := remote_master.master.Prepare(goBin.SourcePath, goBin.Name, "go", goBin.KeepAlive, goBin.Args)
 	*ack = true
 	if err != nil {
@@ -93,15 +106,15 @@ func (remote_master *RemoteMaster) MonitStatus(req string, response *ProcRespons
 	procsResponse := []*ProcDataResponse{}
 	for id := range procs {
 		proc := procs[id]
-		procData := &ProcDataResponse {
-			Name: proc.Identifier(),
-			Pid: proc.GetPid(),
+		procData := &ProcDataResponse{
+			Name:   proc.Identifier(),
+			Pid:    proc.GetPid(),
 			Status: proc.GetStatus(),
-			KeepAlive: proc.ShouldKeepAlive(),
+			// KeepAlive: proc.ShouldKeepAlive(),
 		}
 		procsResponse = append(procsResponse, procData)
 	}
-	*response = ProcResponse {
+	*response = ProcResponse{
 		Procs: procsResponse,
 	}
 	return nil
@@ -164,13 +177,14 @@ func (client *RemoteClient) Resurrect() error {
 // StartGoBin is a wrapper that calls the remote StartsGoBin.
 // It returns an error in case there's any.
 func (client *RemoteClient) StartGoBin(sourcePath string, name string, keepAlive bool, args []string) error {
+	var started bool
 	goBin := &GoBin{
 		SourcePath: sourcePath,
 		Name:       name,
 		KeepAlive:  keepAlive,
 		Args:       args,
 	}
-	var started bool
+
 	return client.conn.Call("RemoteMaster.StartGoBin", goBin, &started)
 }
 

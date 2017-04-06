@@ -1,12 +1,15 @@
 package process
 
-import "os"
-import "syscall"
-import "errors"
-import "strconv"
+import (
+	"errors"
+	"os"
+	"strconv"
+	"syscall"
 
-import "github.com/topfreegames/apm/lib/utils"
+	"github.com/struCoder/pmgo/lib/utils"
+)
 
+// ProcContainer is a interface that about proc
 type ProcContainer interface {
 	Start() error
 	ForceStop() error
@@ -19,6 +22,7 @@ type ProcContainer interface {
 	AddRestart()
 	NotifyStopped()
 	SetStatus(status string)
+	SetUptime()
 	GetPid() int
 	GetStatus() *ProcStatus
 	Watch() (*os.ProcessState, error)
@@ -74,7 +78,7 @@ func (proc *Proc) Start() error {
 	if err != nil {
 		return err
 	}
-
+	proc.Status.InitUptime()
 	proc.Status.SetStatus("started")
 	return nil
 }
@@ -155,37 +159,44 @@ func (proc *Proc) release() {
 	utils.DeleteFile(proc.Pidfile)
 }
 
-// Notify that process was stopped so we can set its PID to -1
+// NotifyStopped that process was stopped so we can set its PID to -1
 func (proc *Proc) NotifyStopped() {
-	proc.Pid = -1;
+	proc.Pid = -1
 }
 
-// Add one restart to proc status
+// AddRestart is add one restart to proc status
 func (proc *Proc) AddRestart() {
 	proc.Status.AddRestart()
 }
 
-// Return proc current PID
+// GetPid will return proc current PID
 func (proc *Proc) GetPid() int {
-	return proc.Pid;
+	return proc.Pid
 }
 
-// Return proc current status
+// GetStatus will return proc current status
 func (proc *Proc) GetStatus() *ProcStatus {
-	return proc.Status;
+	// update uptime
+	proc.SetUptime()
+	return proc.Status
 }
 
-// Set proc status
+// SetStatus will set proc status
 func (proc *Proc) SetStatus(status string) {
-	proc.Status.SetStatus(status);
+	proc.Status.SetStatus(status)
 }
 
-// Proc identifier that will be used by watcher to keep track of its processes
+// SetUptime will set Uptime
+func (proc *Proc) SetUptime() {
+	proc.Status.SetUptime()
+}
+
+// Identifier is that will be used by watcher to keep track of its processes
 func (proc *Proc) Identifier() string {
-	return proc.Name;
+	return proc.Name
 }
 
-// Returns true if the process should be kept alive or not
+// ShouldKeepAlive will returns true if the process should be kept alive or not
 func (proc *Proc) ShouldKeepAlive() bool {
-	return proc.KeepAlive;
+	return proc.KeepAlive
 }

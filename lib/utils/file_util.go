@@ -1,9 +1,11 @@
 package utils
 
-import "io/ioutil"
-import "os"
+import (
+	"io/ioutil"
+	"os"
 
-import "github.com/BurntSushi/toml"
+	"github.com/BurntSushi/toml"
+)
 
 // WriteFile will write the info on array of bytes b to filepath. It will set the file
 // permission mode to 0660

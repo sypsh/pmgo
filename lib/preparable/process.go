@@ -1,10 +1,14 @@
 package preparable
 
-import "os/exec"
-import "strings"
+import (
+	"os/exec"
+	"strings"
 
-import "github.com/topfreegames/apm/lib/process"
+	"github.com/struCoder/pmgo/lib/process"
+)
 
+// ProcPreparable is a preparable with all the necessary informations to run
+// a process. To actually run a process, call the Start() method.
 type ProcPreparable interface {
 	PrepareBin() ([]byte, error)
 	Start() (process.ProcContainer, error)
@@ -15,8 +19,7 @@ type ProcPreparable interface {
 	getOutPath() string
 	getErrPath() string
 }
-// ProcPreparable is a preparable with all the necessary informations to run
-// a process. To actually run a process, call the Start() method.
+
 type Preparable struct {
 	Name       string
 	SourcePath string
@@ -68,8 +71,9 @@ func (preparable *Preparable) Start() (process.ProcContainer, error) {
 	return proc, err
 }
 
+// Identifier is a function that get proc name
 func (preparable *Preparable) Identifier() string {
-	return preparable.Name;
+	return preparable.Name
 }
 
 func (preparable *Preparable) getPath() string {
