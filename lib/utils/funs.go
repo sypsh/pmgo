@@ -4,7 +4,6 @@ import (
 	"strconv"
 )
 
-
 const (
 	MINUTE = 60
 	HOUR   = MINUTE * 60
@@ -45,8 +44,6 @@ func FormatUptime(startTime, currentTime int64) string {
 		return strconv.Itoa(int(val/DAY)) + "d"
 	} else if val >= MONTH && val < YEAR {
 		return strconv.Itoa(int(val/MONTH)) + "M"
-	} 
-	else {
-		return strconv.Itoa(int(val/YEAR)) + "y"
 	}
+	return strconv.Itoa(int(val/YEAR)) + "y"
 }
