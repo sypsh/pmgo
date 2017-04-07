@@ -100,17 +100,19 @@ func (cli *Cli) Status() {
 		proc := procResponse.Procs[id]
 		maxName = int(math.Max(float64(maxName), float64(len(proc.Name))))
 	}
-	totalSize := maxName + 48
+	totalSize := maxName + 70
 	topBar := ""
 	for i := 1; i <= totalSize; i++ {
 		topBar += "-"
 	}
-	infoBar := fmt.Sprintf("|%s|%s|%s|%s|%s|",
+	infoBar := fmt.Sprintf("|%s|%s|%s|%s|%s|%s|%s|",
 		utils.PadString("pid", 9),
 		utils.PadString("name", maxName+2),
 		utils.PadString("status", 12),
 		utils.PadString("uptime", 10),
-		utils.PadString("restart", 9))
+		utils.PadString("restart", 9),
+		utils.PadString("CPU", 10),
+		utils.PadString("memory", 10))
 	fmt.Println(topBar)
 	fmt.Println(infoBar)
 	for id := range procResponse.Procs {
@@ -119,12 +121,14 @@ func (cli *Cli) Status() {
 		// if !proc.KeepAlive {
 		// 	kp = "False"
 		// }
-		fmt.Printf("|%s|%s|%s|%s|%s|\n",
+		fmt.Printf("|%s|%s|%s|%s|%s|%s|%s|\n",
 			utils.PadString(fmt.Sprintf("%d", proc.Pid), 9),
 			utils.PadString(proc.Name, maxName+2),
 			utils.PadString(proc.Status.Status, 12),
 			utils.PadString(proc.Status.Uptime, 10),
-			utils.PadString(strconv.Itoa(proc.Status.Restarts), 9))
+			utils.PadString(strconv.Itoa(proc.Status.Restarts), 9),
+			utils.PadString(strconv.Itoa(int(proc.Status.Sys.CPU)), 10),
+			utils.PadString(strconv.Itoa(int(proc.Status.Sys.Memory)), 10))
 	}
 	fmt.Println(topBar)
 }
