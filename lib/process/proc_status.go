@@ -3,6 +3,7 @@ package process
 import (
 	"time"
 
+	"github.com/struCoder/pidusage"
 	"github.com/struCoder/pmgo/lib/utils"
 )
 
@@ -12,6 +13,7 @@ type ProcStatus struct {
 	Restarts  int
 	StartTime int64
 	Uptime    string
+	Sys       *pidusage.SysInfo
 }
 
 // SetStatus will set the process string status.
@@ -32,4 +34,9 @@ func (proc_status *ProcStatus) InitUptime() {
 // SetUptime will figure out process uptime
 func (proc_status *ProcStatus) SetUptime() {
 	proc_status.Uptime = utils.FormatUptime(proc_status.StartTime, time.Now().Unix())
+}
+
+// SetSysInfo will get current proc cpu and memory usage
+func (proc_status *ProcStatus) SetSysInfo(pid int) {
+	proc_status.Sys = pidusage.GetStat(pid)
 }

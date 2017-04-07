@@ -23,6 +23,7 @@ type ProcContainer interface {
 	NotifyStopped()
 	SetStatus(status string)
 	SetUptime()
+	SetSysInfo()
 	GetPid() int
 	GetStatus() *ProcStatus
 	Watch() (*os.ProcessState, error)
@@ -176,6 +177,9 @@ func (proc *Proc) GetPid() int {
 
 // GetStatus will return proc current status
 func (proc *Proc) GetStatus() *ProcStatus {
+	// update cpu and memory
+	proc.SetSysInfo()
+
 	// update uptime
 	proc.SetUptime()
 	return proc.Status
@@ -189,6 +193,11 @@ func (proc *Proc) SetStatus(status string) {
 // SetUptime will set Uptime
 func (proc *Proc) SetUptime() {
 	proc.Status.SetUptime()
+}
+
+// SetSysInfo will get current proc cpu and memory usage
+func (proc *Proc) SetSysInfo() {
+	proc.Status.SetSysInfo(proc.process.Pid)
 }
 
 // Identifier is that will be used by watcher to keep track of its processes

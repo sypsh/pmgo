@@ -39,7 +39,7 @@ func FormatUptime(startTime, currentTime int64) string {
 	} else if val >= MINUTE && val < HOUR {
 		return strconv.Itoa(int(val/MINUTE)) + "m"
 	} else if val >= HOUR && val < DAY {
-		return strconv.Itoa(int(val/HOUR)) + "H"
+		return strconv.Itoa(int(val/HOUR)) + "h"
 	} else if val >= DAY && val < MONTH {
 		return strconv.Itoa(int(val/DAY)) + "d"
 	} else if val >= MONTH && val < YEAR {
