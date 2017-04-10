@@ -177,11 +177,15 @@ func (proc *Proc) GetPid() int {
 
 // GetStatus will return proc current status
 func (proc *Proc) GetStatus() *ProcStatus {
+	if !proc.IsAlive() {
+		proc.ResetUpTime()
+	} else {
+		// update uptime
+		proc.SetUptime()
+	}
 	// update cpu and memory
 	proc.SetSysInfo()
 
-	// update uptime
-	proc.SetUptime()
 	return proc.Status
 }
 
@@ -193,6 +197,11 @@ func (proc *Proc) SetStatus(status string) {
 // SetUptime will set Uptime
 func (proc *Proc) SetUptime() {
 	proc.Status.SetUptime()
+}
+
+// ResetUpTime will set Uptime
+func (proc *Proc) ResetUpTime() {
+	proc.Status.ResetUptime()
 }
 
 // SetSysInfo will get current proc cpu and memory usage

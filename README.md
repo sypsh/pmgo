@@ -33,7 +33,7 @@ PMGO is a lightweight process manager written in Golang for Golang applications.
 
 Starting an application is easy:
 ```bash
-$ pmgo start source app-name --keep-alive
+$ pmgo start source app-name
 ```
 
 This will basically compile your project source code and start it as a

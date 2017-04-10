@@ -93,6 +93,7 @@ func main() {
 	case restart.FullCommand():
 		cli := cli.InitCli(*dns, *timeout)
 		cli.RestartProcess(*restartName)
+		cli.Status()
 	case stop.FullCommand():
 		cli := cli.InitCli(*dns, *timeout)
 		cli.StopProcess(*stopName)
