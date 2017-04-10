@@ -10,6 +10,10 @@ const (
 	DAY    = HOUR * 24
 	MONTH  = DAY * 30
 	YEAR   = MONTH * 12
+	BYTE   = 1
+	KB     = 1024 * BYTE
+	MB     = 1024 * KB
+	GB     = 1024 * MB
 )
 
 // PadString will add totalSize spaces evenly to the right and left side of str.
@@ -46,4 +50,17 @@ func FormatUptime(startTime, currentTime int64) string {
 		return strconv.Itoa(int(val/MONTH)) + "M"
 	}
 	return strconv.Itoa(int(val/YEAR)) + "y"
+}
+
+// FormatMemory will format memory val
+func FormatMemory(input int) string {
+	if input < KB {
+		return strconv.Itoa(input) + "KB"
+	} else if input >= KB && input < MB {
+		return strconv.Itoa(input/KB) + "KB"
+	} else if input >= MB && input < GB {
+		return strconv.Itoa(input/MB) + "MB"
+	}
+	return strconv.Itoa(input/GB) + "GB"
+
 }

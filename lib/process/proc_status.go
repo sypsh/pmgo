@@ -3,6 +3,7 @@ package process
 import (
 	"time"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/struCoder/pidusage"
 	"github.com/struCoder/pmgo/lib/utils"
 )
@@ -36,7 +37,16 @@ func (proc_status *ProcStatus) SetUptime() {
 	proc_status.Uptime = utils.FormatUptime(proc_status.StartTime, time.Now().Unix())
 }
 
+// ResetUptime will Reset uptime
+func (proc_status *ProcStatus) ResetUptime() {
+	proc_status.Uptime = "0s"
+}
+
 // SetSysInfo will get current proc cpu and memory usage
 func (proc_status *ProcStatus) SetSysInfo(pid int) {
-	proc_status.Sys = pidusage.GetStat(pid)
+	var err error
+	proc_status.Sys, err = pidusage.GetStat(pid)
+	if err != nil {
+		log.Error(err)
+	}
 }

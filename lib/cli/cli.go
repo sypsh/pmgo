@@ -111,7 +111,7 @@ func (cli *Cli) Status() {
 		utils.PadString("status", 12),
 		utils.PadString("uptime", 10),
 		utils.PadString("restart", 9),
-		utils.PadString("CPU", 10),
+		utils.PadString("CPU·%", 10),
 		utils.PadString("memory", 10))
 	fmt.Println(topBar)
 	fmt.Println(infoBar)
@@ -128,7 +128,7 @@ func (cli *Cli) Status() {
 			utils.PadString(proc.Status.Uptime, 10),
 			utils.PadString(strconv.Itoa(proc.Status.Restarts), 9),
 			utils.PadString(strconv.Itoa(int(proc.Status.Sys.CPU)), 10),
-			utils.PadString(strconv.Itoa(int(proc.Status.Sys.Memory)), 10))
+			utils.PadString(utils.FormatMemory(int(proc.Status.Sys.Memory)), 10))
 	}
 	fmt.Println(topBar)
 }
