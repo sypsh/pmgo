@@ -1,3 +1,6 @@
+dependencies:
+  override:
+    - go clean
 general:
   branches:
     only:
