@@ -36,7 +36,12 @@ PMGO is a lightweight process manager written in Golang for Golang applications.
 
 ```bash
 $ go get github.com/struCoder/pmgo
+$ mv $GOPATH/bin/pmgo /usr/local/bin
 ```
+
+Or
+
+curl https://gist.githubusercontent.com/struCoder/fee6e29a79ce076af11e0bdd7fdc553e/raw/26a01ede82ac74d4117dbebb286ea226479a2347/install_pmgo.sh | sh
 
 ## Start pmgo
 
@@ -90,3 +95,12 @@ $ pmgo list                                                # Display status for 
 - Simply star this repository :-)
 - Help us spread the world on Facebook and Twitter
 - Contribute Code!
+- I'll be very grateful if you'd like to donate to encourage me to continue maintaining pmgo.
+
+### Donate
+
+#### Paypal
+[paypal](https://www.paypal.me/strucoder)
+
+#### alipay(zhifubao)
+![alipay](http://7xjbiz.com1.z0.glb.clouddn.com/me/CmNDkpK6xeOuhqXD)
