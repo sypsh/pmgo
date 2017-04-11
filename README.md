@@ -90,6 +90,8 @@ $ pmgo resurrect                                             # Restore previousl
 $ pmgo list                                                # Display status for each app.
 ```
 
+### Demo
+![demo](http://7xjbiz.com1.z0.glb.clouddn.com/demo/xr3HjcsjDnzh9u9?imageView2/0/w/980)
 
 ### I Love This. How do I Help?
 
