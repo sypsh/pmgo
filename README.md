@@ -50,7 +50,7 @@ In order to properly use pmgo, you always need to start a server. This will be c
 ```bash
 $ pmgo serve
 ```
-If no config file is provided, it will default to a folder '~/.pmgo' where `pmgo` is first started.
+If no config file is provided, it will default to a folder `~/.pmgo` where `pmgo` is first started.
 
 ## Stop pmgo
 
@@ -61,7 +61,7 @@ $ pmgo kill
 ## Starting a new application
 If it's the first time you are starting a new golang application, you need to tell pmgo to first build its binary. Then you need to first run:
 ```bash
-$ pmgo start source app-name --keep-alive
+$ pmgo start source app-name
 ```
 
 This will automatically compile, start and daemonize your application. If you need to later on, stop, restart or delete your app from PMGO, you can just run normal commands using the app-name you specified. Example:
