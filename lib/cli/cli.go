@@ -9,6 +9,7 @@ import (
 
 	"os"
 
+	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
 	"github.com/struCoder/pmgo/lib/master"
 	"github.com/struCoder/pmgo/lib/utils"
@@ -105,13 +106,23 @@ func (cli *Cli) Status() {
 	}
 
 	table := tablewriter.NewWriter(os.Stdout)
+	table.SetCenterSeparator("─")
+	table.SetRowSeparator("─")
+	table.SetColumnSeparator("│")
+
 	table.SetAlignment(tablewriter.ALIGN_CENTER)
-	table.SetHeader([]string{"name", "pid", "status", "uptime", "restart", "CPU·%", "memory"})
+	table.SetHeader([]string{
+		"name", "pid", "status", "uptime", "restart", "CPU·%", "memory",
+	})
 
 	for id := range procResponse.Procs {
 		proc := procResponse.Procs[id]
+		status := color.GreenString(proc.Status.Status)
+		if proc.Status.Status != "running" {
+			status = color.RedString(proc.Status.Status)
+		}
 		table.Append([]string{
-			proc.Name, fmt.Sprintf("%d", proc.Pid), proc.Status.Status, proc.Status.Uptime,
+			color.CyanString(proc.Name), fmt.Sprintf("%d", proc.Pid), status, proc.Status.Uptime,
 			strconv.Itoa(proc.Status.Restarts), strconv.Itoa(int(proc.Status.Sys.CPU)),
 			utils.FormatMemory(int(proc.Status.Sys.Memory)),
 		})
