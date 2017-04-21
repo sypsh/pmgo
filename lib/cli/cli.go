@@ -3,7 +3,6 @@ package cli
 import (
 	"fmt"
 	"log"
-	"math"
 	"strconv"
 	"time"
 
@@ -99,11 +98,6 @@ func (cli *Cli) Status() {
 	if err != nil {
 		log.Fatalf("Failed to get status due to: %+v\n", err)
 	}
-	maxName := 0
-	for id := range procResponse.Procs {
-		proc := procResponse.Procs[id]
-		maxName = int(math.Max(float64(maxName), float64(len(proc.Name))))
-	}
 
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetCenterSeparator("─")
@@ -134,5 +128,10 @@ func (cli *Cli) Status() {
 
 // ProcInfo will display process information
 func (cli *Cli) ProcInfo(procName string) {
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetCenterSeparator("─")
+	table.SetRowSeparator("─")
+	table.SetColumnSeparator("│")
 
+	table.SetAlignment(tablewriter.ALIGN_LEFT)
 }

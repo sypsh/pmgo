@@ -1,7 +1,7 @@
 /*
 Master package is the main package that keeps everything running as it should be. It's responsible for starting, stopping and deleting processes. It also will keep an eye on the Watcher in case a process dies so it can restart it again.
 
-RemoteMaster is responsible for exporting the main APM operations as HTTP requests. If you want to start a Remote Server, run:
+RemoteMaster is responsible for exporting the main pmgo operations as HTTP requests. If you want to start a Remote Server, run:
 
 - remoteServer := master.StartRemoteMasterServer(dsn, configFile)
 
@@ -40,13 +40,13 @@ import (
 type Master struct {
 	sync.Mutex
 
-	SysFolder string           // SysFolder is the main APM folder where the necessary config files will be stored.
-	PidFile   string           // PidFille is the APM pid file path.
-	OutFile   string           // OutFile is the APM output log file path.
-	ErrFile   string           // ErrFile is the APM err log file path.
+	SysFolder string           // SysFolder is the main pmgo folder where the necessary config files will be stored.
+	PidFile   string           // PidFille is the pmgo pid file path.
+	OutFile   string           // OutFile is the pmgo output log file path.
+	ErrFile   string           // ErrFile is the pmgo err log file path.
 	Watcher   *watcher.Watcher // Watcher is a watcher instance.
 
-	Procs map[string]process.ProcContainer // Procs is a map containing all procs started on APM.
+	Procs map[string]process.ProcContainer // Procs is a map containing all procs started on pmgo.
 }
 
 // DecodableMaster is a struct that the config toml file will decode to.
@@ -328,9 +328,9 @@ func (master *Master) restart(proc process.ProcContainer) error {
 // 	}
 // }
 
-// Stop will stop APM and all of its running procs.
+// Stop will stop pmgo and all of its running procs.
 func (master *Master) Stop() error {
-	log.Info("Stopping APM...")
+	log.Info("Stopping pmgo...")
 	procs := master.ListProcs()
 	for id := range procs {
 		proc := procs[id]
