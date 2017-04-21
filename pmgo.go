@@ -74,7 +74,10 @@ var (
 	status = app.Command("list", "Get pmgo list.")
 
 	version        = app.Command("version", "get version")
-	currentVersion = "0.1.0"
+	currentVersion = "0.2.0"
+
+	info     = app.Command("info", "Describe all parameters of a process id")
+	infoName = info.Arg("name", "process name").Required().String()
 )
 
 func main() {
@@ -110,6 +113,8 @@ func main() {
 		cli.Status()
 	case version.FullCommand():
 		fmt.Println(currentVersion)
+	case info.FullCommand():
+		fmt.Println(*infoName)
 	}
 }
 
