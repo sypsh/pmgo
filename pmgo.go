@@ -78,7 +78,7 @@ var (
 	version        = app.Command("version", "get version")
 	currentVersion = "0.2.0"
 
-	info     = app.Command("info", "Describe all parameters of a process id")
+	info     = app.Command("info", "Describe importance parameters of a process id")
 	infoName = info.Arg("name", "process name").Required().String()
 )
 

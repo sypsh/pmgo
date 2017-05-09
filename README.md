@@ -82,10 +82,10 @@ $ pmgo delete app-name
 ### Commands overview
 
 ```bash
-$ pmgo serve                                                  # start pmgo daemon process
-$ pmgo kill                                                   # kill pmgo daemon process
+$ pmgo serve                                                 # start pmgo daemon process
+$ pmgo kill                                                  # kill pmgo daemon process
 
-$ pmgo start source app-name                                # Compile, start, daemonize and auto  restart application.
+$ pmgo start source app-name                                 # Compile, start, daemonize and auto  restart application.
 $ pmgo restart app-name                                      # Restart a previously saved process
 $ pmgo stop app-name                                         # Stop application.
 $ pmgo delete app-name                                       # Delete application forever.
@@ -93,7 +93,8 @@ $ pmgo delete app-name                                       # Delete applicatio
 $ pmgo save                                                  # Save current process list
 $ pmgo resurrect                                             # Restore previously saved processes
 
-$ pmgo list                                                # Display status for each app.
+$ pmgo list                                                  # Display status for each app.
+$ pmgo info app-name                                         # describe importance parameters of a process name
 ```
 
 ### Demo
