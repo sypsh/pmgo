@@ -28,6 +28,11 @@ type ProcContainer interface {
 	GetStatus() *ProcStatus
 	Watch() (*os.ProcessState, error)
 	release()
+	GetOutFile() string
+	GetPidFile() string
+	GetPath() string
+	GetErrFile() string
+	GetName() string
 }
 
 // Proc is a os.Process wrapper with Status and more info that will be used on Master to maintain
@@ -175,6 +180,26 @@ func (proc *Proc) GetPid() int {
 	return proc.Pid
 }
 
+// GetOutFile will return proc out file
+func (proc *Proc) GetOutFile() string {
+	return proc.Outfile
+}
+
+// GetErrFile will return proc error file
+func (proc *Proc) GetErrFile() string {
+	return proc.Errfile
+}
+
+// GetPidFile will return proc pid file
+func (proc *Proc) GetPidFile() string {
+	return proc.Pidfile
+}
+
+// GetPath will return proc path
+func (proc *Proc) GetPath() string {
+	return proc.Path
+}
+
 // GetStatus will return proc current status
 func (proc *Proc) GetStatus() *ProcStatus {
 	if !proc.IsAlive() {
@@ -217,4 +242,9 @@ func (proc *Proc) Identifier() string {
 // ShouldKeepAlive will returns true if the process should be kept alive or not
 func (proc *Proc) ShouldKeepAlive() bool {
 	return proc.KeepAlive
+}
+
+// GetName will return current proc name
+func (proc *Proc) GetName() string {
+	return proc.Name
 }

@@ -32,6 +32,12 @@
 PMGO is a lightweight process manager written in Golang for Golang applications. It helps you keep your applications alive forever, reload and start them from the source code.
 
 
+
+## Change log
+
+[Change log](./changelog.md)
+
+
 ## Install pmgo
 
 ```bash
@@ -41,7 +47,7 @@ $ mv $GOPATH/bin/pmgo /usr/local/bin
 
 Or
 ```bash
-curl https://gist.githubusercontent.com/struCoder/fee6e29a79ce076af11e0bdd7fdc553e/raw/9c966105b2ba42f9d445dcaf72c28ca05ef827e1/install_pmgo.sh | sh
+curl https://raw.githubusercontent.com/struCoder/pmgo/master/install.sh | sh
 ```
 
 ## Start pmgo
@@ -76,10 +82,10 @@ $ pmgo delete app-name
 ### Commands overview
 
 ```bash
-$ pmgo serve                                                  # start pmgo daemon process
-$ pmgo kill                                                   # kill pmgo daemon process
+$ pmgo serve                                                 # start pmgo daemon process
+$ pmgo kill                                                  # kill pmgo daemon process
 
-$ pmgo start source app-name                                # Compile, start, daemonize and auto  restart application.
+$ pmgo start source app-name                                 # Compile, start, daemonize and auto  restart application.
 $ pmgo restart app-name                                      # Restart a previously saved process
 $ pmgo stop app-name                                         # Stop application.
 $ pmgo delete app-name                                       # Delete application forever.
@@ -87,7 +93,8 @@ $ pmgo delete app-name                                       # Delete applicatio
 $ pmgo save                                                  # Save current process list
 $ pmgo resurrect                                             # Restore previously saved processes
 
-$ pmgo list                                                # Display status for each app.
+$ pmgo list                                                  # Display status for each app.
+$ pmgo info app-name                                         # describe importance parameters of a process name
 ```
 
 ### Demo

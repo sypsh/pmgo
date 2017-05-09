@@ -3,10 +3,13 @@ package cli
 import (
 	"fmt"
 	"log"
-	"math"
 	"strconv"
 	"time"
 
+	"os"
+
+	"github.com/fatih/color"
+	"github.com/olekukonko/tablewriter"
 	"github.com/struCoder/pmgo/lib/master"
 	"github.com/struCoder/pmgo/lib/utils"
 )
@@ -95,40 +98,48 @@ func (cli *Cli) Status() {
 	if err != nil {
 		log.Fatalf("Failed to get status due to: %+v\n", err)
 	}
-	maxName := 0
+
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetCenterSeparator("─")
+	table.SetRowSeparator("─")
+	table.SetColumnSeparator("│")
+
+	table.SetAlignment(tablewriter.ALIGN_CENTER)
+	table.SetHeader([]string{
+		"name", "pid", "status", "uptime", "restart", "CPU·%", "memory",
+	})
+
 	for id := range procResponse.Procs {
 		proc := procResponse.Procs[id]
-		maxName = int(math.Max(float64(maxName), float64(len(proc.Name))))
+		status := color.GreenString(proc.Status.Status)
+		if proc.Status.Status != "running" {
+			status = color.RedString(proc.Status.Status)
+		}
+		table.Append([]string{
+			color.CyanString(proc.Name), fmt.Sprintf("%d", proc.Pid), status, proc.Status.Uptime,
+			strconv.Itoa(proc.Status.Restarts), strconv.Itoa(int(proc.Status.Sys.CPU)),
+			utils.FormatMemory(int(proc.Status.Sys.Memory)),
+		})
 	}
-	totalSize := maxName + 70
-	topBar := ""
-	for i := 1; i <= totalSize; i++ {
-		topBar += "-"
+
+	table.SetRowLine(true)
+	table.Render()
+}
+
+// ProcInfo will display process information
+func (cli *Cli) ProcInfo(procName string) {
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetCenterSeparator("─")
+	table.SetRowSeparator("─")
+	table.SetColumnSeparator("│")
+	table.SetAutoWrapText(true)
+	table.SetAlignment(tablewriter.ALIGN_LEFT)
+	procDetail := cli.remoteClient.GetProcByName(procName)
+	for k, v := range *procDetail {
+		table.Append([]string{
+			color.GreenString(k), v,
+		})
 	}
-	infoBar := fmt.Sprintf("|%s|%s|%s|%s|%s|%s|%s|",
-		utils.PadString("pid", 9),
-		utils.PadString("name", maxName+2),
-		utils.PadString("status", 12),
-		utils.PadString("uptime", 10),
-		utils.PadString("restart", 9),
-		utils.PadString("CPU·%", 10),
-		utils.PadString("memory", 10))
-	fmt.Println(topBar)
-	fmt.Println(infoBar)
-	for id := range procResponse.Procs {
-		proc := procResponse.Procs[id]
-		// kp := "True"
-		// if !proc.KeepAlive {
-		// 	kp = "False"
-		// }
-		fmt.Printf("|%s|%s|%s|%s|%s|%s|%s|\n",
-			utils.PadString(fmt.Sprintf("%d", proc.Pid), 9),
-			utils.PadString(proc.Name, maxName+2),
-			utils.PadString(proc.Status.Status, 12),
-			utils.PadString(proc.Status.Uptime, 10),
-			utils.PadString(strconv.Itoa(proc.Status.Restarts), 9),
-			utils.PadString(strconv.Itoa(int(proc.Status.Sys.CPU)), 10),
-			utils.PadString(utils.FormatMemory(int(proc.Status.Sys.Memory)), 10))
-	}
-	fmt.Println(topBar)
+	table.Render()
+
 }

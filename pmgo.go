@@ -38,13 +38,15 @@ import (
 
 	"fmt"
 
+	"time"
+
 	log "github.com/Sirupsen/logrus"
 )
 
 var (
 	app     = kingpin.New("pmgo", "Aguia Process Manager.")
 	dns     = app.Flag("dns", "TCP Dns host.").Default(":9876").String()
-	timeout = app.Flag("timeout", "Timeout to connect to client").Default("30s").Duration()
+	timeout = 30 * time.Second
 
 	serveStop           = app.Command("kill", "Kill daemon pmgo.")
 	serveStopConfigFile = serveStop.Flag("config-file", "Config file location").String()
@@ -74,7 +76,10 @@ var (
 	status = app.Command("list", "Get pmgo list.")
 
 	version        = app.Command("version", "get version")
-	currentVersion = "0.1.0"
+	currentVersion = "0.2.0"
+
+	info     = app.Command("info", "Describe importance parameters of a process id")
+	infoName = info.Arg("name", "process name").Required().String()
 )
 
 func main() {
@@ -84,32 +89,35 @@ func main() {
 	case serve.FullCommand():
 		startRemoteMasterServer()
 	case resurrect.FullCommand():
-		cli := cli.InitCli(*dns, *timeout)
+		cli := cli.InitCli(*dns, timeout)
 		cli.Resurrect()
 	case start.FullCommand():
-		cli := cli.InitCli(*dns, *timeout)
+		cli := cli.InitCli(*dns, timeout)
 		cli.StartGoBin(*startSourcePath, *startName, startKeepAlive, *startArgs)
 		cli.Status()
 	case restart.FullCommand():
-		cli := cli.InitCli(*dns, *timeout)
+		cli := cli.InitCli(*dns, timeout)
 		cli.RestartProcess(*restartName)
 		cli.Status()
 	case stop.FullCommand():
-		cli := cli.InitCli(*dns, *timeout)
+		cli := cli.InitCli(*dns, timeout)
 		cli.StopProcess(*stopName)
 		cli.Status()
 	case delete.FullCommand():
-		cli := cli.InitCli(*dns, *timeout)
+		cli := cli.InitCli(*dns, timeout)
 		cli.DeleteProcess(*deleteName)
 	case save.FullCommand():
-		cli := cli.InitCli(*dns, *timeout)
+		cli := cli.InitCli(*dns, timeout)
 		cli.Save()
 	case status.FullCommand():
 		// checkRemoteMasterServer()
-		cli := cli.InitCli(*dns, *timeout)
+		cli := cli.InitCli(*dns, timeout)
 		cli.Status()
 	case version.FullCommand():
 		fmt.Println(currentVersion)
+	case info.FullCommand():
+		cli := cli.InitCli(*dns, timeout)
+		cli.ProcInfo(*infoName)
 	}
 }
 

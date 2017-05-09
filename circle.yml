@@ -1,7 +1,0 @@
-dependencies:
-  pre:
-    - go clean
-general:
-  branches:
-    only:
-      - master
