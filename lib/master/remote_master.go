@@ -2,11 +2,11 @@ package master
 
 import (
 	"fmt"
-	"log"
 	"net"
 	"net/rpc"
 	"time"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/struCoder/pmgo/lib/process"
 )
 
@@ -22,9 +22,9 @@ type RemoteClient struct {
 
 // GoBin is a struct that represents the necessary arguments for a go binary to be built.
 type GoBin struct {
-	SourcePath string   // SourcePath is the package path. (Ex: github.com/topfreegames/apm)
+	SourcePath string   // SourcePath is the package path. (Ex: github.com/topfreegames/pmgo)
 	Name       string   // Name is the process name that will be given to the process.
-	KeepAlive  bool     // KeepAlive will determine whether APM should keep the proc live or not.
+	KeepAlive  bool     // KeepAlive will determine whether pmgo should keep the proc live or not.
 	Args       []string // Args is an array containing all the extra args that will be passed to the binary after compilation.
 }
 
@@ -127,13 +127,19 @@ func (remote_master *RemoteMaster) DeleteProcess(procName string, ack *bool) err
 	return remote_master.master.DeleteProcess(procName)
 }
 
-// Stop will stop APM remote server.
+// Stop will stop pmgo remote server.
 // It returns an error in case there's any.
 func (remote_master *RemoteMaster) Stop() error {
 	return remote_master.master.Stop()
 }
 
-// StartRemoteMasterServer starts a remote APM server listening on dsn address and binding to
+//GetProcByName will return proc detail info by name
+func (remote_master *RemoteMaster) GetProcByName(procName string, response *map[string]string) error {
+	*response = remote_master.master.ProcInfo(procName)
+	return nil
+}
+
+// StartRemoteMasterServer starts a remote pmgo server listening on dsn address and binding to
 // configFile.
 // It returns a RemoteMaster instance.
 func StartRemoteMasterServer(dsn string, configFile string) *RemoteMaster {
@@ -222,4 +228,11 @@ func (client *RemoteClient) MonitStatus() (ProcResponse, error) {
 	var response *ProcResponse
 	err := client.conn.Call("RemoteMaster.MonitStatus", "", &response)
 	return *response, err
+}
+
+// GetProcByName will return proc info by name
+func (client RemoteClient) GetProcByName(procName string) *map[string]string {
+	var response map[string]string
+	client.conn.Call("RemoteMaster.GetProcByName", procName, &response)
+	return &response
 }

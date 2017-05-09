@@ -102,6 +102,23 @@ func InitMaster(configFile string) *Master {
 	return master
 }
 
+// ProcInfo will return process detail info with map
+func (master *Master) ProcInfo(proName string) map[string]string {
+	proc := master.Procs[proName]
+	procDetailInfo := make(map[string]string)
+	procStatus := proc.GetStatus()
+	procDetailInfo["pid"] = fmt.Sprintf("%d", proc.GetPid())
+	procDetailInfo["outFile"] = proc.GetOutFile()
+	procDetailInfo["pidFile"] = proc.GetPidFile()
+	procDetailInfo["errorFile"] = proc.GetErrFile()
+	procDetailInfo["path"] = proc.GetPath()
+	procDetailInfo["name"] = proc.GetName()
+	procDetailInfo["uptime"] = procStatus.Uptime
+	procDetailInfo["status"] = procStatus.Status
+	procDetailInfo["restart"] = fmt.Sprintf("%d", procStatus.Restarts)
+	return procDetailInfo
+}
+
 // WatchProcs will keep the procs running forever.
 func (master *Master) WatchProcs() {
 	for proc := range master.Watcher.RestartProc() {

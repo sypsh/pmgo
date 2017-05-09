@@ -132,6 +132,14 @@ func (cli *Cli) ProcInfo(procName string) {
 	table.SetCenterSeparator("─")
 	table.SetRowSeparator("─")
 	table.SetColumnSeparator("│")
-
+	table.SetAutoWrapText(true)
 	table.SetAlignment(tablewriter.ALIGN_LEFT)
+	procDetail := cli.remoteClient.GetProcByName(procName)
+	for k, v := range *procDetail {
+		table.Append([]string{
+			color.GreenString(k), v,
+		})
+	}
+	table.Render()
+
 }

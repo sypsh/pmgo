@@ -47,7 +47,7 @@ $ mv $GOPATH/bin/pmgo /usr/local/bin
 
 Or
 ```bash
-curl https://gist.githubusercontent.com/struCoder/fee6e29a79ce076af11e0bdd7fdc553e/raw/9c966105b2ba42f9d445dcaf72c28ca05ef827e1/install_pmgo.sh | sh
+curl https://raw.githubusercontent.com/struCoder/pmgo/master/install.sh | sh
 ```
 
 ## Start pmgo
