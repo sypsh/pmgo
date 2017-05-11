@@ -1,7 +1,10 @@
 package utils
 
 import (
+	"os"
 	"strconv"
+
+	"github.com/olekukonko/tablewriter"
 )
 
 const (
@@ -62,5 +65,13 @@ func FormatMemory(input int) string {
 		return strconv.Itoa(input/MB) + "MB"
 	}
 	return strconv.Itoa(input/GB) + "GB"
+}
 
+// GetTableWriter will return instance of tablewriter
+func GetTableWriter() *tablewriter.Table {
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetCenterSeparator("─")
+	table.SetRowSeparator("─")
+	table.SetColumnSeparator("│")
+	return table
 }

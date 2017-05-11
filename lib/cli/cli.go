@@ -6,8 +6,6 @@ import (
 	"strconv"
 	"time"
 
-	"os"
-
 	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
 	"github.com/struCoder/pmgo/lib/master"
@@ -99,11 +97,7 @@ func (cli *Cli) Status() {
 		log.Fatalf("Failed to get status due to: %+v\n", err)
 	}
 
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetCenterSeparator("─")
-	table.SetRowSeparator("─")
-	table.SetColumnSeparator("│")
-
+	table := utils.GetTableWriter()
 	table.SetAlignment(tablewriter.ALIGN_CENTER)
 	table.SetHeader([]string{
 		"name", "pid", "status", "uptime", "restart", "CPU·%", "memory",
@@ -128,10 +122,7 @@ func (cli *Cli) Status() {
 
 // ProcInfo will display process information
 func (cli *Cli) ProcInfo(procName string) {
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetCenterSeparator("─")
-	table.SetRowSeparator("─")
-	table.SetColumnSeparator("│")
+	table := utils.GetTableWriter()
 	table.SetAutoWrapText(true)
 	table.SetAlignment(tablewriter.ALIGN_LEFT)
 	procDetail := cli.remoteClient.GetProcByName(procName)

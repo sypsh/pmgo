@@ -1,7 +1,6 @@
 #!/bin/sh
 
-version="0.2.0"
-
+version="0.2.1"
 
 UNAME=$(uname)
 # Check to see if it starts with MINGW.
