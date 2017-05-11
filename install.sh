@@ -2,7 +2,6 @@
 
 version="0.2.1"
 
-
 UNAME=$(uname)
 # Check to see if it starts with MINGW.
 if [ "$UNAME" ">" "MINGW" -a "$UNAME" "<" "MINGX" ] ; then
