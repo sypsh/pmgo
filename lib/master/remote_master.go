@@ -49,14 +49,6 @@ func (remote_master *RemoteMaster) Save(req string, ack *bool) error {
 	return remote_master.master.SaveProcs()
 }
 
-// Resurrect will restore all previously save processes.
-// Returns an error in case there's any.
-func (remote_master *RemoteMaster) Resurrect(req string, ack *bool) error {
-	req = ""
-	*ack = true
-	return remote_master.master.Revive()
-}
-
 // StartGoBin will build a binary based on the arguments passed on goBin, then it will start the process
 // and keep it alive if KeepAlive is set to true.
 // It returns an error and binds true to ack pointer.
@@ -102,18 +94,23 @@ func (remote_master *RemoteMaster) StopProcess(procName string, ack *bool) error
 // It returns an error in case there's any.
 func (remote_master *RemoteMaster) MonitStatus(req string, response *ProcResponse) error {
 	req = ""
+	log.Info("--------****************------------------")
 	procs := remote_master.master.ListProcs()
 	procsResponse := []*ProcDataResponse{}
-	for id := range procs {
-		proc := procs[id]
-		procData := &ProcDataResponse{
-			Name:   proc.Identifier(),
-			Pid:    proc.GetPid(),
-			Status: proc.GetStatus(),
-			// KeepAlive: proc.ShouldKeepAlive(),
+	log.Info("------------------------------------------------")
+	if len(procs) >= 1 {
+		for id := range procs {
+			proc := procs[id]
+			procData := &ProcDataResponse{
+				Name:   proc.Identifier(),
+				Pid:    proc.GetPid(),
+				Status: proc.GetStatus(),
+				// KeepAlive: proc.ShouldKeepAlive(),
+			}
+			procsResponse = append(procsResponse, procData)
 		}
-		procsResponse = append(procsResponse, procData)
 	}
+
 	*response = ProcResponse{
 		Procs: procsResponse,
 	}
@@ -173,13 +170,6 @@ func (client *RemoteClient) Save() error {
 	return client.conn.Call("RemoteMaster.Save", "", &started)
 }
 
-// Resurrect will restore all previously save processes.
-// Returns an error in case there's any.
-func (client *RemoteClient) Resurrect() error {
-	var started bool
-	return client.conn.Call("RemoteMaster.Resurrect", "", &started)
-}
-
 // StartGoBin is a wrapper that calls the remote StartsGoBin.
 // It returns an error in case there's any.
 func (client *RemoteClient) StartGoBin(sourcePath string, name string, keepAlive bool, args []string) error {
@@ -225,9 +215,9 @@ func (client *RemoteClient) DeleteProcess(procName string) error {
 // MonitStatus is a wrapper that calls the remote MonitStatus.
 // It returns a tuple with a list of process and an error in case there's any.
 func (client *RemoteClient) MonitStatus() (ProcResponse, error) {
-	var response *ProcResponse
-	err := client.conn.Call("RemoteMaster.MonitStatus", "", &response)
-	return *response, err
+	var responses *ProcResponse
+	err := client.conn.Call("RemoteMaster.MonitStatus", "", &responses)
+	return *responses, err
 }
 
 // GetProcByName will return proc info by name

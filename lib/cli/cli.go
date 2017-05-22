@@ -2,10 +2,10 @@ package cli
 
 import (
 	"fmt"
-	"log"
 	"strconv"
 	"time"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
 	"github.com/struCoder/pmgo/lib/master"
@@ -38,15 +38,6 @@ func (cli *Cli) Save() {
 	}
 }
 
-// Resurrect will restore all previously save processes.
-// Display an error in case there's any.
-func (cli *Cli) Resurrect() {
-	err := cli.remoteClient.Resurrect()
-	if err != nil {
-		log.Fatalf("Failed to resurrect all previously save processes due to: %+v\n", err)
-	}
-}
-
 // StartGoBin will try to start a go binary process.
 // Returns a fatal error in case there's any.
 func (cli *Cli) StartGoBin(sourcePath string, name string, keepAlive bool, args []string) {
@@ -76,10 +67,16 @@ func (cli *Cli) StartProcess(procName string) {
 
 // StopProcess will try to stop a process named procName.
 func (cli *Cli) StopProcess(procName string) {
-	err := cli.remoteClient.StopProcess(procName)
-	if err != nil {
-		log.Fatalf("Failed to stop process due to: %+v\n", err)
+	isExist := cli.remoteClient.GetProcByName(procName)
+	if len(*isExist) == 0 {
+		log.Warnf("porcess %s not found", procName)
+	} else {
+		err := cli.remoteClient.StopProcess(procName)
+		if err != nil {
+			log.Fatalf("Failed to stop process due to: %+v\n", err)
+		}
 	}
+
 }
 
 // DeleteProcess will stop and delete all dependencies from process procName forever.
@@ -133,4 +130,22 @@ func (cli *Cli) ProcInfo(procName string) {
 	}
 	table.Render()
 
+}
+
+// DeleteAllProcess will stop all process
+func (cli *Cli) DeleteAllProcess() {
+	procResponse, err := cli.remoteClient.MonitStatus()
+	if err != nil {
+		log.Fatalf("Failed to get status due to: %+v\n", err)
+	}
+
+	if len(procResponse.Procs) == 0 {
+		log.Warn("All processes have been stopped and deleted")
+		return
+	}
+	for id := range procResponse.Procs {
+		proc := procResponse.Procs[id]
+		cli.remoteClient.DeleteProcess(proc.Name)
+		log.Infof("proc: %s has quit", proc.Name)
+	}
 }

@@ -91,7 +91,6 @@ $ pmgo stop app-name                                         # Stop application.
 $ pmgo delete app-name                                       # Delete application forever.
 
 $ pmgo save                                                  # Save current process list
-$ pmgo resurrect                                             # Restore previously saved processes
 
 $ pmgo list                                                  # Display status for each app.
 $ pmgo info app-name                                         # describe importance parameters of a process name

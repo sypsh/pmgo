@@ -24,6 +24,8 @@ It will start the remote client and return the instance so you can use to initia
 package main
 
 import (
+	"sync"
+
 	"github.com/struCoder/pmgo/lib/cli"
 	"github.com/struCoder/pmgo/lib/master"
 	"gopkg.in/alecthomas/kingpin.v2"
@@ -85,13 +87,17 @@ var (
 func main() {
 	switch kingpin.MustParse(app.Parse(os.Args[1:])) {
 	case serveStop.FullCommand():
+		checkRemoteMasterServer()
+		cli := cli.InitCli(*dns, timeout)
+		cli.DeleteAllProcess()
 		stopRemoteMasterServer()
 	case serve.FullCommand():
-		startRemoteMasterServer()
+		// startRemoteMasterServer()
+		fmt.Println("Server will start auto")
 	case resurrect.FullCommand():
-		cli := cli.InitCli(*dns, timeout)
-		cli.Resurrect()
+		fmt.Println("This feature will not support. sorry")
 	case start.FullCommand():
+		checkRemoteMasterServer()
 		cli := cli.InitCli(*dns, timeout)
 		cli.StartGoBin(*startSourcePath, *startName, startKeepAlive, *startArgs)
 		cli.Status()
@@ -100,6 +106,7 @@ func main() {
 		cli.RestartProcess(*restartName)
 		cli.Status()
 	case stop.FullCommand():
+		checkRemoteMasterServer()
 		cli := cli.InitCli(*dns, timeout)
 		cli.StopProcess(*stopName)
 		cli.Status()
@@ -110,7 +117,7 @@ func main() {
 		cli := cli.InitCli(*dns, timeout)
 		cli.Save()
 	case status.FullCommand():
-		// checkRemoteMasterServer()
+		checkRemoteMasterServer()
 		cli := cli.InitCli(*dns, timeout)
 		cli.Status()
 	case version.FullCommand():
@@ -161,27 +168,58 @@ func checkRemoteMasterServer() {
 	}
 }
 
+var waitedForSignal os.Signal
+
+func waitForChildSignal(wg *sync.WaitGroup) {
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan, syscall.SIGUSR1, syscall.SIGUSR2)
+	wg.Add(1)
+	go func() {
+		waitedForSignal = <-signalChan
+		wg.Done()
+	}()
+}
+
+func kill(pid int, signal os.Signal) error {
+	p, err := os.FindProcess(pid)
+	if err != nil {
+		return err
+	}
+	defer p.Release()
+	return p.Signal(signal)
+}
+
 func startRemoteMasterServer() {
+	var wg sync.WaitGroup
+	waitForChildSignal(&wg)
 	ctx := getCtx()
 	if ok, _, _ := isDaemonRunning(ctx); ok {
 		log.Info("pmgo daemon is already running.")
 		return
 	}
 
-	log.Info("daemon started")
 	d, err := ctx.Reborn()
 	if err != nil {
 		log.Fatalf("Failed to reborn daemon due to %+v.", err)
 	}
 
 	if d != nil {
-		return
+		wg.Wait()
+		if waitedForSignal == syscall.SIGUSR1 {
+			log.Info("daemon started")
+			return
+		}
+	} else {
+		kill(os.Getpid(), syscall.SIGUSR1)
+		wg.Wait()
+		defer ctx.Release()
 	}
-	defer ctx.Release()
 
 	log.Info("Starting remote master server...")
 	remoteMaster := master.StartRemoteMasterServer(*dns, *serveConfigFile)
 
+	// send signal to parent's process to kill goroutine
+	kill(os.Getppid(), syscall.SIGUSR1)
 	sigsKill := make(chan os.Signal, 1)
 	signal.Notify(sigsKill,
 		syscall.SIGINT,

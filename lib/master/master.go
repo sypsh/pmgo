@@ -345,7 +345,7 @@ func (master *Master) restart(proc process.ProcContainer) error {
 // 	}
 // }
 
-// Stop will stop pmgo and all of its running procs.
+// Stop will stop pmgo and save all of its running procs.
 func (master *Master) Stop() error {
 	log.Info("Stopping pmgo...")
 	procs := master.ListProcs()
