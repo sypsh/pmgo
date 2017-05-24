@@ -50,11 +50,6 @@ Or
 curl https://raw.githubusercontent.com/struCoder/pmgo/master/install.sh | sh
 ```
 
-## Stop pmgo
-
-```bash
-$ pmgo kill
-```
 
 ## Starting a new application
 If it's the first time you are starting a new golang application, you need to tell pmgo to first build its binary. Then you need to first run:
@@ -74,7 +69,6 @@ $ pmgo delete app-name
 ### Commands overview
 
 ```bash
-$ pmgo serve                                                 # start pmgo daemon process
 $ pmgo kill                                                  # kill pmgo daemon process
 
 $ pmgo start source app-name                                 # Compile, start, daemonize and auto  restart application.
