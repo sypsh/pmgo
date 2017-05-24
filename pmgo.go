@@ -78,7 +78,7 @@ var (
 	status = app.Command("list", "Get pmgo list.")
 
 	version        = app.Command("version", "get version")
-	currentVersion = "0.2.1"
+	currentVersion = "0.5.0"
 
 	info     = app.Command("info", "Describe importance parameters of a process id")
 	infoName = info.Arg("name", "process name").Required().String()
@@ -92,8 +92,8 @@ func main() {
 		cli.DeleteAllProcess()
 		stopRemoteMasterServer()
 	case serve.FullCommand():
-		// startRemoteMasterServer()
-		fmt.Println("Server will start auto")
+		log.Warn("Server will auto start and this command will be delete")
+		startRemoteMasterServer()
 	case resurrect.FullCommand():
 		fmt.Println("This feature will not support. sorry")
 	case start.FullCommand():
@@ -102,6 +102,7 @@ func main() {
 		cli.StartGoBin(*startSourcePath, *startName, startKeepAlive, *startArgs)
 		cli.Status()
 	case restart.FullCommand():
+		checkRemoteMasterServer()
 		cli := cli.InitCli(*dns, timeout)
 		cli.RestartProcess(*restartName)
 		cli.Status()
@@ -111,6 +112,7 @@ func main() {
 		cli.StopProcess(*stopName)
 		cli.Status()
 	case delete.FullCommand():
+		checkRemoteMasterServer()
 		cli := cli.InitCli(*dns, timeout)
 		cli.DeleteProcess(*deleteName)
 	case save.FullCommand():
@@ -123,6 +125,7 @@ func main() {
 	case version.FullCommand():
 		fmt.Println(currentVersion)
 	case info.FullCommand():
+		checkRemoteMasterServer()
 		cli := cli.InitCli(*dns, timeout)
 		cli.ProcInfo(*infoName)
 	}

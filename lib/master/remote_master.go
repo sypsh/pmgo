@@ -94,10 +94,8 @@ func (remote_master *RemoteMaster) StopProcess(procName string, ack *bool) error
 // It returns an error in case there's any.
 func (remote_master *RemoteMaster) MonitStatus(req string, response *ProcResponse) error {
 	req = ""
-	log.Info("--------****************------------------")
 	procs := remote_master.master.ListProcs()
 	procsResponse := []*ProcDataResponse{}
-	log.Info("------------------------------------------------")
 	if len(procs) >= 1 {
 		for id := range procs {
 			proc := procs[id]

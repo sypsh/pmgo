@@ -50,6 +50,11 @@ func (cli *Cli) StartGoBin(sourcePath string, name string, keepAlive bool, args 
 // RestartProcess will try to restart a process with procName. Note that this process
 // must have been already started through StartGoBin.
 func (cli *Cli) RestartProcess(procName string) {
+	isExist := cli.remoteClient.GetProcByName(procName)
+	if len(*isExist) == 0 {
+		log.Errorf("porcess %s not found", procName)
+		return
+	}
 	err := cli.remoteClient.RestartProcess(procName)
 	if err != nil {
 		log.Fatalf("Failed to restart process due to: %+v\n", err)
@@ -61,7 +66,7 @@ func (cli *Cli) RestartProcess(procName string) {
 func (cli *Cli) StartProcess(procName string) {
 	err := cli.remoteClient.StartProcess(procName)
 	if err != nil {
-		log.Fatalf("Failed to start process due to: %+v\n", err)
+		log.Errorf("Failed to start process due to: %+v\n", err)
 	}
 }
 
@@ -76,11 +81,15 @@ func (cli *Cli) StopProcess(procName string) {
 			log.Fatalf("Failed to stop process due to: %+v\n", err)
 		}
 	}
-
 }
 
 // DeleteProcess will stop and delete all dependencies from process procName forever.
 func (cli *Cli) DeleteProcess(procName string) {
+	isExist := cli.remoteClient.GetProcByName(procName)
+	if len(*isExist) == 0 {
+		log.Errorf("porcess %s not found", procName)
+		return
+	}
 	err := cli.remoteClient.DeleteProcess(procName)
 	if err != nil {
 		log.Fatalf("Failed to delete process due to: %+v\n", err)
@@ -119,17 +128,20 @@ func (cli *Cli) Status() {
 
 // ProcInfo will display process information
 func (cli *Cli) ProcInfo(procName string) {
+	procDetail := cli.remoteClient.GetProcByName(procName)
+	if len(*procDetail) == 0 {
+		log.Errorf("porcess %s not found", procName)
+		return
+	}
 	table := utils.GetTableWriter()
 	table.SetAutoWrapText(true)
 	table.SetAlignment(tablewriter.ALIGN_LEFT)
-	procDetail := cli.remoteClient.GetProcByName(procName)
 	for k, v := range *procDetail {
 		table.Append([]string{
 			color.GreenString(k), v,
 		})
 	}
 	table.Render()
-
 }
 
 // DeleteAllProcess will stop all process

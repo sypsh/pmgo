@@ -106,16 +106,19 @@ func InitMaster(configFile string) *Master {
 func (master *Master) ProcInfo(proName string) map[string]string {
 	proc := master.Procs[proName]
 	procDetailInfo := make(map[string]string)
-	procStatus := proc.GetStatus()
-	procDetailInfo["pid"] = fmt.Sprintf("%d", proc.GetPid())
-	procDetailInfo["outFile"] = proc.GetOutFile()
-	procDetailInfo["pidFile"] = proc.GetPidFile()
-	procDetailInfo["errorFile"] = proc.GetErrFile()
-	procDetailInfo["path"] = proc.GetPath()
-	procDetailInfo["name"] = proc.GetName()
-	procDetailInfo["uptime"] = procStatus.Uptime
-	procDetailInfo["status"] = procStatus.Status
-	procDetailInfo["restart"] = fmt.Sprintf("%d", procStatus.Restarts)
+	if proc != nil {
+		procStatus := proc.GetStatus()
+		procDetailInfo["pid"] = fmt.Sprintf("%d", proc.GetPid())
+		procDetailInfo["outFile"] = proc.GetOutFile()
+		procDetailInfo["pidFile"] = proc.GetPidFile()
+		procDetailInfo["errorFile"] = proc.GetErrFile()
+		procDetailInfo["path"] = proc.GetPath()
+		procDetailInfo["name"] = proc.GetName()
+		procDetailInfo["uptime"] = procStatus.Uptime
+		procDetailInfo["status"] = procStatus.Status
+		procDetailInfo["restart"] = fmt.Sprintf("%d", procStatus.Restarts)
+	}
+
 	return procDetailInfo
 }
 
