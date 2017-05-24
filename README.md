@@ -50,19 +50,6 @@ Or
 curl https://raw.githubusercontent.com/struCoder/pmgo/master/install.sh | sh
 ```
 
-## Start pmgo
-
-In order to properly use pmgo, you always need to start a server. This will be changed in the next version, but in the meantime you need to run the command bellow to start daemon using pmgo.
-```bash
-$ pmgo serve
-```
-If no config file is provided, it will default to a folder `~/.pmgo` where `pmgo` is first started.
-
-## Stop pmgo
-
-```bash
-$ pmgo kill
-```
 
 ## Starting a new application
 If it's the first time you are starting a new golang application, you need to tell pmgo to first build its binary. Then you need to first run:
@@ -82,7 +69,6 @@ $ pmgo delete app-name
 ### Commands overview
 
 ```bash
-$ pmgo serve                                                 # start pmgo daemon process
 $ pmgo kill                                                  # kill pmgo daemon process
 
 $ pmgo start source app-name                                 # Compile, start, daemonize and auto  restart application.
@@ -91,7 +77,6 @@ $ pmgo stop app-name                                         # Stop application.
 $ pmgo delete app-name                                       # Delete application forever.
 
 $ pmgo save                                                  # Save current process list
-$ pmgo resurrect                                             # Restore previously saved processes
 
 $ pmgo list                                                  # Display status for each app.
 $ pmgo info app-name                                         # describe importance parameters of a process name
