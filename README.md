@@ -50,14 +50,6 @@ Or
 curl https://raw.githubusercontent.com/struCoder/pmgo/master/install.sh | sh
 ```
 
-## Start pmgo
-
-In order to properly use pmgo, you always need to start a server. This will be changed in the next version, but in the meantime you need to run the command bellow to start daemon using pmgo.
-```bash
-$ pmgo serve
-```
-If no config file is provided, it will default to a folder `~/.pmgo` where `pmgo` is first started.
-
 ## Stop pmgo
 
 ```bash
