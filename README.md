@@ -83,7 +83,7 @@ $ pmgo info app-name                                         # describe importan
 ```
 
 ### Demo
-![demo](http://7xjbiz.com1.z0.glb.clouddn.com/github/QFtkaK0zJwoRXOko)
+![demo](http://7xjbiz.com1.z0.glb.clouddn.com/github/QFtkaK0zJwoRXOko?r=a)
 
 ### I Love This. How do I Help?
 
