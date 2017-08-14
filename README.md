@@ -54,7 +54,7 @@ curl https://raw.githubusercontent.com/struCoder/pmgo/master/install.sh | sh
 ## Starting a new application
 If it's the first time you are starting a new golang application, you need to tell pmgo to first build its binary. Then you need to first run:
 ```bash
-$ pmgo start source app-name
+$ pmgo start path/to/source-directory app-name
 ```
 
 This will automatically compile, start and daemonize your application. If you need to later on, stop, restart or delete your app from PMGO, you can just run normal commands using the app-name you specified. Example:
