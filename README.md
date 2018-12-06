@@ -100,4 +100,4 @@ $ pmgo info app-name                                         # describe importan
 
 ### LICENSE
 
-MIT
+[MIT](https://github.com/struCoder/pmgo/blob/master/LICENSE)
