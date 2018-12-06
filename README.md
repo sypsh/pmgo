@@ -94,8 +94,10 @@ $ pmgo info app-name                                         # describe importan
 
 ### Donate
 
-#### Paypal
-[paypal](https://www.paypal.me/strucoder)
+|      **Paypal**       |        **Alipay**         |
+| :------------------------: | :------------------------: |
+| [![paypal](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/strucoder) | [![alipay](https://img.shields.io/badge/Donate-alipay-blue.svg)](https://i.loli.net/2018/11/29/5bff95e2d29df.png) |
 
-#### alipay(zhifubao)
-![alipay](http://7xjbiz.com1.z0.glb.clouddn.com/me/CmNDkpK6xeOuhqXD)
+### LICENSE
+
+MIT
