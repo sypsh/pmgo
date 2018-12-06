@@ -1,6 +1,6 @@
 <div align="center">
 <a>
-   <img src="http://7xjbiz.com1.z0.glb.clouddn.com/github/socJAdzByYtu5maI">
+   <img src="https://i.loli.net/2018/12/06/5c08b9a294c29.png">
 </a>
 <br/>
 <b>PMGO</b>
@@ -83,7 +83,7 @@ $ pmgo info app-name                                         # describe importan
 ```
 
 ### Demo
-![demo](http://7xjbiz.com1.z0.glb.clouddn.com/github/QFtkaK0zJwoRXOko?r=a)
+![demo](https://i.loli.net/2018/12/06/5c08bbd407b35.png)
 
 ### I Love This. How do I Help?
 
@@ -94,8 +94,10 @@ $ pmgo info app-name                                         # describe importan
 
 ### Donate
 
-#### Paypal
-[paypal](https://www.paypal.me/strucoder)
+|      **Paypal**       |        **Alipay**         |
+| :------------------------: | :------------------------: |
+| [![paypal](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/strucoder) | [![alipay](https://img.shields.io/badge/Donate-alipay-blue.svg)](https://i.loli.net/2018/11/29/5bff95e2d29df.png) |
 
-#### alipay(zhifubao)
-![alipay](http://7xjbiz.com1.z0.glb.clouddn.com/me/CmNDkpK6xeOuhqXD)
+### LICENSE
+
+MIT
