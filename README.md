@@ -98,6 +98,8 @@ $ pmgo info app-name                                         # describe importan
 | :------------------------: | :------------------------: |
 | [![paypal](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/strucoder) | [![alipay](https://img.shields.io/badge/Donate-alipay-blue.svg)](https://i.loli.net/2018/11/29/5bff95e2d29df.png) |
 
+### By The Way
+In China Mainland, maybe you can't download some packages in golang.org, thus just click [here](https://gopm.io/download) to download and build packages.
 ### LICENSE
 
 [MIT](https://github.com/struCoder/pmgo/blob/master/LICENSE)
