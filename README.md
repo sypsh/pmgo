@@ -82,6 +82,15 @@ $ pmgo list                                                  # Display status fo
 $ pmgo info app-name                                         # describe importance parameters of a process name
 ```
 
+#### Start your GO-application with parameters
+```bash
+pmgo start tmp/ test --args "arg1 arg2 arg3"
+
+# In your application
+fmt.Println(os.Args[1:])
+# Output: [arg1, arg2, arg3]
+```
+
 ### Demo
 ![demo](https://i.loli.net/2018/12/06/5c08bbd407b35.png)
 
