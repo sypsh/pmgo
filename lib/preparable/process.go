@@ -1,16 +1,19 @@
 package preparable
 
 import (
+	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/struCoder/pmgo/lib/process"
 )
 
 // ProcPreparable is a preparable with all the necessary informations to run
 // a process. To actually run a process, call the Start() method.
 type ProcPreparable interface {
-	PrepareBin() ([]byte, error)
+	PrepareBin(bool) ([]byte, error)
 	Start() (process.ProcContainer, error)
 	getPath() string
 	Identifier() string
@@ -33,7 +36,7 @@ type Preparable struct {
 // PrepareBin will compile the Golang project from SourcePath and populate Cmd with the proper
 // command for the process to be executed.
 // Returns the compile command output.
-func (preparable *Preparable) PrepareBin() ([]byte, error) {
+func (preparable *Preparable) PrepareBin(fromBinFile bool) ([]byte, error) {
 	// Remove the last character '/' if present
 	if preparable.SourcePath[len(preparable.SourcePath)-1] == '/' {
 		preparable.SourcePath = strings.TrimSuffix(preparable.SourcePath, "/")
@@ -41,9 +44,17 @@ func (preparable *Preparable) PrepareBin() ([]byte, error) {
 	cmd := ""
 	cmdArgs := []string{}
 	binPath := preparable.getBinPath()
+
 	if preparable.Language == "go" {
-		cmd = "go"
-		cmdArgs = []string{"build", "-o", binPath, preparable.SourcePath + "/."}
+		if fromBinFile {
+			os.MkdirAll(filepath.Dir(binPath), 0755)
+			cmd = "cp"
+			cmdArgs = []string{preparable.SourcePath, binPath}
+			log.Info("copy file ", preparable.SourcePath, " to ", filepath.Dir(binPath))
+		} else {
+			cmd = "go"
+			cmdArgs = []string{"build", "-o", binPath, preparable.SourcePath + "/."}
+		}
 	}
 
 	preparable.Cmd = preparable.getBinPath()

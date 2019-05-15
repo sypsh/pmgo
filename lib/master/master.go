@@ -147,7 +147,7 @@ func (master *Master) WatchProcs() {
 
 // Prepare will compile the source code into a binary and return a preparable
 // ready to be executed.
-func (master *Master) Prepare(sourcePath string, name string, language string, keepAlive bool, args []string) (preparable.ProcPreparable, []byte, error) {
+func (master *Master) Prepare(sourcePath string, name string, language string, keepAlive bool, args []string, fromBin bool) (preparable.ProcPreparable, []byte, error) {
 	procPreparable := &preparable.Preparable{
 		Name:       name,
 		SourcePath: sourcePath,
@@ -156,7 +156,7 @@ func (master *Master) Prepare(sourcePath string, name string, language string, k
 		KeepAlive:  keepAlive,
 		Args:       args,
 	}
-	output, err := procPreparable.PrepareBin()
+	output, err := procPreparable.PrepareBin(fromBin)
 	return procPreparable, output, err
 }
 

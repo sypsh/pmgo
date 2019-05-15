@@ -47,7 +47,10 @@ $ mv $GOPATH/bin/pmgo /usr/local/bin
 
 Or
 ```bash
-curl https://raw.githubusercontent.com/struCoder/pmgo/master/install.sh | sh
+git clone https://github.com/struCoder/pmgo.git
+cd path/to/struCoder/pmgo
+go build -v pmgo.go
+mv pmgo /usr/local/bin
 ```
 
 

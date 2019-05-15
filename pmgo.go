@@ -61,6 +61,7 @@ var (
 	start           = app.Command("start", "start and daemonize an app.")
 	startSourcePath = start.Arg("start go file", "go file.").Required().String()
 	startName       = start.Arg("name", "Process name.").Required().String()
+	binFile         = start.Arg("binary", "compiled golang file").Bool()
 	startKeepAlive  = true
 	startArgs       = start.Flag("args", "External args.").Strings()
 
@@ -78,7 +79,7 @@ var (
 	status = app.Command("list", "Get pmgo list.")
 
 	version        = app.Command("version", "get version")
-	currentVersion = "0.5.1"
+	currentVersion = "0.6.0"
 
 	info     = app.Command("info", "Describe importance parameters of a process id")
 	infoName = info.Arg("name", "process name").Required().String()
@@ -99,7 +100,7 @@ func main() {
 	case start.FullCommand():
 		checkRemoteMasterServer()
 		cli := cli.InitCli(*dns, timeout)
-		cli.StartGoBin(*startSourcePath, *startName, startKeepAlive, *startArgs)
+		cli.StartGoBin(*startSourcePath, *startName, startKeepAlive, *startArgs, *binFile)
 		cli.Status()
 	case restart.FullCommand():
 		checkRemoteMasterServer()
