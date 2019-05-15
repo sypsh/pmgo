@@ -94,6 +94,14 @@ fmt.Println(os.Args[1:])
 # Output: [arg1, arg2, arg3]
 ```
 
+### Beta Features(git checkout beta and rebuild)
+#### Start application from user input compiled binary
+
+```bash
+# true means use user input compiled binary path
+pmgo start /Users/strucoder/personalPro/goplace/main awesome_name true --args="arg1 arg2 arg3"
+```
+
 ### Demo
 ![demo](https://i.loli.net/2018/12/06/5c08bbd407b35.png)
 
