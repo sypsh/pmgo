@@ -47,7 +47,10 @@ $ mv $GOPATH/bin/pmgo /usr/local/bin
 
 Or
 ```bash
-curl https://raw.githubusercontent.com/struCoder/pmgo/master/install.sh | sh
+git clone https://github.com/struCoder/pmgo.git
+cd path/to/struCoder/pmgo
+go build -v pmgo.go
+mv pmgo /usr/local/bin
 ```
 
 
@@ -89,6 +92,14 @@ pmgo start tmp/ test --args "arg1 arg2 arg3"
 # In your application
 fmt.Println(os.Args[1:])
 # Output: [arg1, arg2, arg3]
+```
+
+### Beta Features(`git checkout beta and rebuild`)
+#### Start application from user input compiled binary
+
+```bash
+# true means use user input compiled binary path
+pmgo start /Users/strucoder/personalPro/goplace/main awesome_name true --args="arg1 arg2 arg3"
 ```
 
 ### Demo
