@@ -32,7 +32,7 @@ import (
 	"github.com/struCoder/pmgo/lib/utils"
 	"github.com/struCoder/pmgo/lib/watcher"
 
-	log "github.com/sirupsen/logrus"
+	log "github.com/Sirupsen/logrus"
 )
 
 // Master is the main module that keeps everything in place and execute
