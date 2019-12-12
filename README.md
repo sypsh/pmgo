@@ -33,7 +33,7 @@ PMGO is a lightweight process manager written in Golang for Golang applications.
 
 
 
-## Change log
+## Change log(2019-12-12 updated)
 
 [Change log](./changelog.md)
 
@@ -94,7 +94,9 @@ fmt.Println(os.Args[1:])
 # Output: [arg1, arg2, arg3]
 ```
 
-### Beta Features(git checkout beta and rebuild)
+
+### Beta Features(`git checkout beta and rebuild`)
+
 #### Start application from user input compiled binary
 
 ```bash

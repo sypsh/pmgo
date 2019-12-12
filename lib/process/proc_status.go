@@ -3,7 +3,7 @@ package process
 import (
 	"time"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"github.com/struCoder/pidusage"
 	"github.com/struCoder/pmgo/lib/utils"
 )

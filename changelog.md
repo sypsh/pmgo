@@ -1,3 +1,6 @@
+### v0.6.1
+- support go mod
+
 ### v0.6.0
 - Add new feature: start go application from user input compiled binary
 - Update Guid
