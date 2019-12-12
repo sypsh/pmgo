@@ -42,8 +42,9 @@ import (
 
 	"time"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
+
 
 var (
 	app     = kingpin.New("pmgo", "Aguia Process Manager.")
