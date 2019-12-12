@@ -1,6 +1,3 @@
-### v0.5.2
-- support go mod
-
 ### v0.5.1
 - fix bug: when first install pmgo with `install.sh`. thanks to @sanqi
 

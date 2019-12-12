@@ -4,7 +4,7 @@ import (
 	"os"
 	"sync"
 
-	log "github.com/sirupsen/logrus"
+	log "github.com/Sirupsen/logrus"
 	"github.com/struCoder/pmgo/lib/process"
 )
 
