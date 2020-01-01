@@ -1,12 +1,11 @@
 package preparable
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/struCoder/pmgo/lib/process"
 )
 
@@ -41,24 +40,29 @@ func (preparable *Preparable) PrepareBin(fromBinFile bool) ([]byte, error) {
 	if preparable.SourcePath[len(preparable.SourcePath)-1] == '/' {
 		preparable.SourcePath = strings.TrimSuffix(preparable.SourcePath, "/")
 	}
-	cmd := ""
-	cmdArgs := []string{}
 	binPath := preparable.getBinPath()
 
-	if preparable.Language == "go" {
-		if fromBinFile {
-			os.MkdirAll(filepath.Dir(binPath), 0755)
-			cmd = "cp"
-			cmdArgs = []string{preparable.SourcePath, binPath}
-			log.Info("copy file ", preparable.SourcePath, " to ", filepath.Dir(binPath))
-		} else {
-			cmd = "go"
-			cmdArgs = []string{"build", "-o", binPath, preparable.SourcePath + "/."}
+	var output []byte
+	var err error
+	if preparable.Language == "go" && !fromBinFile {
+		cmd := "go"
+		cmdArgs := []string{"build", "-o", binPath, preparable.SourcePath + "/."}
+
+		output, err = exec.Command(cmd, cmdArgs...).Output()
+	} else {
+		info, err := os.Stat(preparable.SourcePath)
+		if err != nil {
+			return make([]byte, 0), err
 		}
+		if info.Mode()&0111 == 0 {
+			return make([]byte, 0), fmt.Errorf("The given source path(%s) is not executable, neither a Go source to compile", preparable.SourcePath)
+		}
+
+		binPath = preparable.SourcePath
 	}
 
-	preparable.Cmd = preparable.getBinPath()
-	return exec.Command(cmd, cmdArgs...).Output()
+	preparable.Cmd = binPath
+	return output, err
 }
 
 // Start will execute the process based on the information presented on the preparable.
