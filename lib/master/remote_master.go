@@ -7,7 +7,7 @@ import (
 	"time"
 
 	log "github.com/sirupsen/logrus"
-	"github.com/struCoder/pmgo/lib/process"
+	"github.com/sypsh/pmgo/lib/process"
 )
 
 // RemoteMaster is a struct that holds the master instance.

@@ -8,8 +8,8 @@ import (
 	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
 	log "github.com/sirupsen/logrus"
-	"github.com/struCoder/pmgo/lib/master"
-	"github.com/struCoder/pmgo/lib/utils"
+	"github.com/sypsh/pmgo/lib/master"
+	"github.com/sypsh/pmgo/lib/utils"
 )
 
 // Cli is the command line client.

@@ -27,10 +27,10 @@ import (
 
 	"time"
 
-	"github.com/struCoder/pmgo/lib/preparable"
-	"github.com/struCoder/pmgo/lib/process"
-	"github.com/struCoder/pmgo/lib/utils"
-	"github.com/struCoder/pmgo/lib/watcher"
+	"github.com/sypsh/pmgo/lib/preparable"
+	"github.com/sypsh/pmgo/lib/process"
+	"github.com/sypsh/pmgo/lib/utils"
+	"github.com/sypsh/pmgo/lib/watcher"
 
 	log "github.com/sirupsen/logrus"
 )

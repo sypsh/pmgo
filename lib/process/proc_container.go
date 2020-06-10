@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"syscall"
 
-	"github.com/struCoder/pmgo/lib/utils"
+	"github.com/sypsh/pmgo/lib/utils"
 )
 
 // ProcContainer is a interface that about proc

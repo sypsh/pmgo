@@ -4,7 +4,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/struCoder/pmgo/lib/process"
+	"github.com/sypsh/pmgo/lib/process"
 )
 
 // ProcPreparable is a preparable with all the necessary informations to run

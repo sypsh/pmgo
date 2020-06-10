@@ -4,7 +4,7 @@ version="0.5.1"
 
 UNAME=$(uname)
 PROJECT_PATH="$GOPATH/src/github.com/struCoder"
-OLD_PROJECT_PATH="$GOPATH/src/github.com/struCoder/pmgo"
+OLD_PROJECT_PATH="$GOPATH/src/github.com/sypsh/pmgo"
 BACKUP=false
 
 # Check to see if it starts with MINGW.
@@ -37,7 +37,7 @@ fi
 
 cd $PROJECT_PATH
 
-wget https://github.com/struCoder/pmgo/archive/v${version}.tar.gz
+wget https://github.com/sypsh/pmgo/archive/v${version}.tar.gz
 tar -zxvf v${version}.tar.gz
 
 mv pmgo-${version} pmgo
