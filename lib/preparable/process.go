@@ -43,7 +43,7 @@ func (preparable *Preparable) PrepareBin() ([]byte, error) {
 	binPath := preparable.getBinPath()
 	if preparable.Language == "go" {
 		cmd = "go"
-		cmdArgs = []string{"build", "-o", binPath, preparable.SourcePath + "/."}
+		cmdArgs = []string{"build", "-o", binPath, preparable.SourcePath, "-v"}
 	}
 
 	preparable.Cmd = preparable.getBinPath()
